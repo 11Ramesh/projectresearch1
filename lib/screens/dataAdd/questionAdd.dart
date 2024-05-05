@@ -25,8 +25,8 @@ class _QuestionADDState extends State<QuestionADD> {
   Future dataAdd() async {
     questionData.add({
       'questions': questions.text,
-      'correctAnswerIndex': correctAnswerIndex.text,
-      'referindex': referindex.text,
+      'correctAnswerIndex': int.parse(correctAnswerIndex.text),
+      'referindex': int.parse(referindex.text),
       '1': answer1.text,
       '2': answer2.text,
       '3': answer3.text,

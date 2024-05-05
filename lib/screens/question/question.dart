@@ -16,7 +16,7 @@ class Question extends StatefulWidget {
 
 class _QuestionState extends State<Question> {
   PageController controller = PageController(initialPage: 0);
-  List<int?> selectedIndices = List.filled(5, null);
+  List<int?> selectedIndices = List.filled(15, null);
   List<dynamic> correctAnswers = [];
   List<dynamic> allQuestionId = [];
   List wrongAnswerReferIndexes = [];
@@ -24,6 +24,7 @@ class _QuestionState extends State<Question> {
   List solutionForWrongAnswer = [];
   final int x = 0;
   int count = 1;
+  int pagecount = 1;
   @override
   Widget build(BuildContext context) {
     FloatingButtonBloc flotingButtonBlocs =
@@ -80,11 +81,19 @@ class _QuestionState extends State<Question> {
         floatingActionButton: BlocBuilder<FirebaseBloc, FirebaseState>(
           builder: (context, state) {
             if (state is addQuestionState) {
-              if (state.questionCount - 1 == controller.page?.toInt()) {
-                return finishButton();
+              if (pagecount == 15) {
+                return Row(
+                  children: [
+                    priviousButton(),
+                    finishButton(),
+                  ],
+                );
               } else {
                 return Row(
-                  children: [nextButton(), priviousButton()],
+                  children: [
+                    priviousButton(),
+                    nextButton(),
+                  ],
                 );
               }
             } else {
@@ -96,25 +105,30 @@ class _QuestionState extends State<Question> {
     );
   }
 
-  Widget nextButton() {
+  Widget priviousButton() {
     return FloatingActionButtons(
         onclick: () {
           setState(() {
             controller.previousPage(
                 duration: const Duration(milliseconds: 400),
                 curve: Curves.linear);
+            if (pagecount > 1) {
+              pagecount--;
+            }
           });
         },
         text: "ආපසු");
   }
 
-  Widget priviousButton() {
+  Widget nextButton() {
     return FloatingActionButtons(
         onclick: () {
           setState(() {
             controller.nextPage(
                 duration: const Duration(milliseconds: 400),
                 curve: Curves.linear);
+
+            pagecount++;
           });
         },
         text: "මිලග");

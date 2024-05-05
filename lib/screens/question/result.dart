@@ -61,9 +61,10 @@ class _ResultState extends State<Result> {
       builder: (context, state) {
         if (state is addCorrectAnswerState) {
           int correctAnswerCount = state.correctAnswers.length;
+          print(correctAnswerCount);
           return CircularPresentage(
-            percent: correctAnswerCount / 4,
-            text: "${(correctAnswerCount / 4) * 100}%",
+            percent: correctAnswerCount / 15,
+            text: "${(correctAnswerCount / 15) * 100}%",
           );
         } else {
           return CircularPresentage(

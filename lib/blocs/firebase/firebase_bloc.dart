@@ -23,8 +23,10 @@ class FirebaseBloc extends Bloc<FirebaseEvent, FirebaseState> {
       List<dynamic> questionId = [];
       int questionCount = 0;
       List solutionList = [];
-      List area = [];
-      List volume = [];
+      List kotasweladapola = [];
+      List samantharasheni = [];
+      List baaga = [];
+      List prethishatha = [];
       List finalSolutionList = [];
 
       if (event is addQuestionEvent) {
@@ -95,19 +97,27 @@ class FirebaseBloc extends Bloc<FirebaseEvent, FirebaseState> {
           // data devide to multiple topics
           solutionList.forEach((element) {
             if (element['topic'] == 'කොටස් වෙළඳපොළ') {
-              area.add(element);
-            } else if (element['topic'] == 'volume') {
-              volume.add(element);
+              kotasweladapola.add(element);
+            } else if (element['topic'] == 'සමාන්තර ශ්‍රේණි') {
+              samantharasheni.add(element);
+            } else if (element['topic'] == 'භාග') {
+              baaga.add(element);
+            } else if (element['topic'] == 'ප්‍රතිශත') {
+              prethishatha.add(element);
             }
           });
-          if(area.length != 0){
-              finalSolutionList.add(area);
+          if (kotasweladapola.length != 0) {
+            finalSolutionList.add(kotasweladapola);
           }
-          if(volume.length != 0){
-              finalSolutionList.add(volume);
+          if (samantharasheni.length != 0) {
+            finalSolutionList.add(samantharasheni);
           }
-          
-          
+          if (baaga.length != 0) {
+            finalSolutionList.add(baaga);
+          }
+          if (prethishatha.length != 0) {
+            finalSolutionList.add(prethishatha);
+          }
 
           // data send to solutionPart2State from the this state
           emit(solutionPart2State(

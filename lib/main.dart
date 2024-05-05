@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
         BlocProvider<FloatingButtonBloc>(
           create: (context) => FloatingButtonBloc(),
         ),
-         BlocProvider<CheckBloc>(
+        BlocProvider<CheckBloc>(
           create: (context) => CheckBloc(),
         ),
       ],

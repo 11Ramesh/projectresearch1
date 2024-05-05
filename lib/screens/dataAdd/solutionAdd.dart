@@ -22,7 +22,7 @@ class _SolutionAddState extends State<SolutionAdd> {
 
   Future dataAdd() async {
     questionData.add({
-      'referindex': referindex.text,
+      'referindex': int.parse(referindex.text),
       'note': note.text,
       'topic': topic.text,
       'youtube': youtube.text,

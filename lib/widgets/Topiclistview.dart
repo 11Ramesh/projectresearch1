@@ -9,6 +9,18 @@ class TopicLists extends StatelessWidget {
   });
 
   double? height;
+  List<String> Topics = [
+    'භාග',
+    'ප්‍රතිශත',
+    'සමාන්තර ශ්‍රේණි ',
+    'ඝන වස්තුවල පරිමාව',
+    'කොටස් වෙළදපොල',
+    'මධ්‍ය ලක්ශ්‍ය ප්‍රමේයය',
+    'ගුනෝත්තර ශ්‍රේණි',
+    'පයිතගරස් ප්‍රමේයය',
+    'අසමානතා',
+    'නිර්මාණ'
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +38,7 @@ class TopicLists extends StatelessWidget {
                 border: Border.all(width: 3, color: Colors.transparent),
                 borderRadius: BorderRadius.circular(10)),
             child: ListTile(
-              title: Text("(${index + 1}.)"),
+              title: Text("${Topics[index]}"),
             ),
           ),
         );
