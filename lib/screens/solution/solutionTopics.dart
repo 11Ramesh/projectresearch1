@@ -10,17 +10,19 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:projectresearch/screens/solution/video.dart';
 import 'package:projectresearch/widgets/elevatedButton.dart';
 
+
 class SolutionTopics extends StatefulWidget {
   @override
   State<SolutionTopics> createState() => _SolutionTopicsState();
 }
 
 class _SolutionTopicsState extends State<SolutionTopics> {
-  List finalSolutionList = [];
+  List finalSolutionToDo = [];
   int countNumber = 0;
   int index = 0;
   late FloatingButtonBloc floatingButtonBloc;
   late CheckBloc checkBlocs;
+  
 
   @override
   void initState() {
@@ -37,10 +39,9 @@ class _SolutionTopicsState extends State<SolutionTopics> {
       body: BlocBuilder<FirebaseBloc, FirebaseState>(
         builder: (context, state) {
           if (state is solutionPart2State) {
-            finalSolutionList = state.finalSolutionList;
+            finalSolutionToDo = state.finalSolutionToDo;
             return ListView.builder(
-              itemCount: finalSolutionList.length,
-              //itemCount: 10,
+              itemCount: finalSolutionToDo.length,
               shrinkWrap: true,
               itemBuilder: (context, index) {
                 return Container(
@@ -50,8 +51,7 @@ class _SolutionTopicsState extends State<SolutionTopics> {
                       border: Border.all(width: 3, color: Colors.transparent),
                       borderRadius: BorderRadius.circular(10)),
                   child: ListTile(
-                    title: Text(finalSolutionList[index][0]['topic']),
-                    //title: Text("Ramesh"),
+                    title: Text(finalSolutionToDo[index][0]['topic']),
                     trailing:
                         BlocBuilder<FloatingButtonBloc, FloatingButtonState>(
                       builder: (context, state) {
@@ -65,7 +65,9 @@ class _SolutionTopicsState extends State<SolutionTopics> {
                                     //put data to CheckBloc
                                     checkBlocs.add(
                                         DataGetSolutionTopicPageEvent(
-                                            countNumber, index,finalSolutionList));
+                                            countNumber,
+                                            index,
+                                            finalSolutionToDo));
                                     Navigator.push(
                                         context,
                                         MaterialPageRoute(
@@ -89,29 +91,4 @@ class _SolutionTopicsState extends State<SolutionTopics> {
       ),
     );
   }
-
-//   Widget FinishButton() {
-//     return
-//   }
 }
-
-
-
-//  BlocListener<FloatingButtonBloc, FloatingButtonState>(
-//                         listener: (context, state) {
-//                           if (state is TopicButtonState) {
-//                             count = state.count;
-//                           }
-//                         },
-//                         child: elevatedButtons(
-//                           text: "Next",
-//                           onclick: index <= (count)
-//                               ? () {
-//                                   Navigator.push(
-//                                       context,
-//                                       MaterialPageRoute(
-//                                           builder: (context) => VideoPage()));
-//                                 }
-//                               : null,
-//                         ),
-//                       )

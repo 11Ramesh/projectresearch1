@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:meta/meta.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 part 'firebase_event.dart';
 part 'firebase_state.dart';
@@ -9,53 +10,86 @@ part 'firebase_state.dart';
 class FirebaseBloc extends Bloc<FirebaseEvent, FirebaseState> {
   FirebaseBloc() : super(FirebaseInitial()) {
     on<FirebaseEvent>((event, emit) async {
-      //collection for question
+      SharedPreferences mcq = await SharedPreferences.getInstance();
+      int? mcqNo = mcq.getInt('mcq');
+      //collection for question mcq
       CollectionReference mcq1 = FirebaseFirestore.instance.collection("mcq1");
 
       //collection for solution
       CollectionReference solution =
           FirebaseFirestore.instance.collection("solution");
 
+      //collection for question structure
+      CollectionReference structure =
+          FirebaseFirestore.instance.collection("structure1");
+
       List questionsList = [];
+      List structureQuestionsList = [];
       Map<String, dynamic> data;
-      Map<String, dynamic> StudentWantStudyData;
+
       List wrongAnswerReferIndexes = [];
       List<dynamic> questionId = [];
+      List structureQuestionId = [];
       int questionCount = 0;
+      int structureQuestionCount = 0;
       List solutionList = [];
       List kotasweladapola = [];
       List samantharasheni = [];
       List baaga = [];
       List prethishatha = [];
       List finalSolutionList = [];
+      List finalSolutionToDo = [];
 
       if (event is addQuestionEvent) {
-        await mcq1.get().then((QuerySnapshot snapshot) {
-          snapshot.docs.forEach((DocumentSnapshot document) {
-            //get all question id
-            questionId.add(document.id);
-            //print(questionId);
-            //get all data from the back end
-            data = document.data() as Map<String, dynamic>;
-            questionsList.add(data);
-          });
-          //get list contains item count
-          questionCount = questionsList.length;
-          //print(questionsList);
-          emit(addQuestionState(
-              question: questionsList,
-              questionId: questionId,
-              questionCount: questionCount));
-        });
+        QuerySnapshot querySnapshot = await mcq1.get();
 
-        //
+        for (var mcq in querySnapshot.docs) {
+          //get all question id
+          questionId.add(mcq.id);
+          //print(questionId);
+          //get all data from the back end
+          data = mcq.data() as Map<String, dynamic>;
+          questionsList.add(data);
+        }
+        //get list contains item count
+        questionCount = questionsList.length;
+
+        QuerySnapshot querySnapshot1 = await structure.get();
+
+        for (var structures in querySnapshot1.docs) {
+          //get all  structure question id
+          structureQuestionId.add(structures.id);
+
+          //get all data from the back end
+          data = structures.data() as Map<String, dynamic>;
+          structureQuestionsList.add(data);
+        }
+        //get list contains item count
+        structureQuestionCount = structureQuestionsList.length;
+
+        emit(addQuestionState(
+            question: questionsList,
+            questionId: questionId,
+            questionCount: questionCount,
+            structureQuestionsList: structureQuestionsList,
+            structureQuestionId: structureQuestionId,
+            structureQuestionCount: structureQuestionCount));
       } else if (event is solutionEvent) {
+        //for mcq question
         List<String> allQuestion = event.allQuestion.toList().cast<String>();
         List<String> correctAnswer =
             event.correctAnswer.toList().cast<String>();
         List<String> wrongAnswer = allQuestion;
 
-        //get the wrong  answer from using allQuestion, correctAnswer lists
+        //for structure question
+
+        List<String> allStructureQuestionId =
+            event.allStructureQuestionId.toList().cast<String>();
+        List<String> correctStructureAnswers =
+            event.correctStructureAnswers.toList().cast<String>();
+        List<String> wrongStructureAnswer = allStructureQuestionId;
+
+        //get the wrong  answer from using all McQ Question, correctAnswer lists
         correctAnswer.forEach((answer) {
           if (answer != null) {
             wrongAnswer.remove(answer);
@@ -70,8 +104,37 @@ class FirebaseBloc extends Bloc<FirebaseEvent, FirebaseState> {
           // Add referIndex to the list
           wrongAnswerReferIndexes.add(referIndex);
         }
+
+        for (var correctStructureAnswer in correctStructureAnswers) {
+          if (correctStructureAnswer != null) {
+            wrongStructureAnswer.remove(correctStructureAnswer);
+          }
+        }
+
+        for (var wrongStructureId in wrongStructureAnswer) {
+          var mc = await structure.doc(wrongStructureId).get();
+          var studentData = mc.data() as Map<String, dynamic>;
+          var referIndex = studentData['referindex'];
+
+          // Add referIndex to the list
+          wrongAnswerReferIndexes.add(referIndex);
+        }
+
+        // for (var wrongAnswerId in wrongAnswer) {
+        //   var mc = await mcq1.doc(wrongAnswerId).get();
+        //   var studentData = mc.data() as Map<String, dynamic>;
+        //   var referIndex = studentData['referindex'];
+
+        //   // Add referIndex to the list
+        //   wrongAnswerReferIndexes.add(referIndex);
+        // }
+
+        print(wrongAnswerReferIndexes);
+
         // send the wrongAnswerReferIndexes to font end
-        emit(solutionState(wrongAnswerReferIndexes: wrongAnswerReferIndexes));
+        emit(solutionState(
+            wrongAnswerReferIndexes: wrongAnswerReferIndexes,
+            wrongStructureAnswerReferIndexes: wrongStructureAnswer));
 
         //
       } else if (event is solutionPart2Event) {
@@ -119,12 +182,31 @@ class FirebaseBloc extends Bloc<FirebaseEvent, FirebaseState> {
             finalSolutionList.add(prethishatha);
           }
 
+          if (kotasweladapola.length > 2) {
+            finalSolutionToDo.add(kotasweladapola);
+          }
+          if (samantharasheni.length > 2) {
+            finalSolutionToDo.add(samantharasheni);
+          }
+          if (baaga.length > 2) {
+            finalSolutionToDo.add(baaga);
+          }
+          if (prethishatha.length > 2) {
+            finalSolutionToDo.add(prethishatha);
+          }
+
           // data send to solutionPart2State from the this state
           emit(solutionPart2State(
               finalSolutionList: finalSolutionList,
-              solutionList: solutionList));
+              solutionList: solutionList,
+              finalSolutionToDo: finalSolutionToDo));
         });
       }
     });
   }
 }
+
+
+
+
+//${mcqNo.toString()}

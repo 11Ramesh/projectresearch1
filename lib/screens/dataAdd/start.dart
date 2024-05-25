@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:projectresearch/screens/dataAdd/questionAdd.dart';
 import 'package:projectresearch/screens/dataAdd/solutionAdd.dart';
+import 'package:projectresearch/screens/dataAdd/typingQuestionAdd.dart';
 import 'package:projectresearch/screens/question/question.dart';
 import 'package:projectresearch/widgets/elevatedButton.dart';
 
@@ -19,10 +20,17 @@ class _StartState extends State<Start> {
       body: Column(
         children: [
           elevatedButtons(
-            text: "Question",
+            text: "MCQ Question",
             onclick: () {
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => QuestionADD()));
+            },
+          ),
+          elevatedButtons(
+            text: "Structure Question",
+            onclick: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => TypingQuestion()));
             },
           ),
           elevatedButtons(

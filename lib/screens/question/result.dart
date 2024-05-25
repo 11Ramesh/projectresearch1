@@ -63,8 +63,8 @@ class _ResultState extends State<Result> {
           int correctAnswerCount = state.correctAnswers.length;
           print(correctAnswerCount);
           return CircularPresentage(
-            percent: correctAnswerCount / 15,
-            text: "${(correctAnswerCount / 15) * 100}%",
+            percent: correctAnswerCount / 10,
+            text: "${(correctAnswerCount / 10) * 100}%",
           );
         } else {
           return CircularPresentage(
