@@ -24,6 +24,11 @@ class _ResultState extends State<Result> {
   Map<String, dynamic> yourGivenAnswer = {};
   Map<String, dynamic> userInputAnswerIndexList = {};
   int correctAnswerCount = 0;
+  List wrongAnswerReferIndexes = [];
+  List<dynamic> allQuestionId = [];
+  List<dynamic> correctAnswers = [];
+  List<dynamic> allStructureQuestionId = [];
+  List<dynamic> correctStructureAnswers = [];
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +66,14 @@ class _ResultState extends State<Result> {
               text: "පාඩම් මාලාවට යොමුවන්න"),
           FloatingActionButtons(
               onclick: () {
-                firebaseblock.add(answerSheetEvent(yourGivenAnswer));
+                firebaseblock.add(answerSheetEvent(
+                    yourGivenAnswer,
+                    userInputAnswerIndexList,
+                    wrongAnswerReferIndexes,
+                    allQuestionId,
+                    correctAnswers,
+                    allStructureQuestionId,
+                    correctStructureAnswers));
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => GivenAnswer()));
               },
@@ -75,10 +87,16 @@ class _ResultState extends State<Result> {
   Widget presentage() {
     return BlocBuilder<FirebaseBloc, FirebaseState>(
       builder: (context, state) {
-        if (state is solutionState) {
+        if (state is solutionPart2State) {
           correctAnswerCount = state.correctAnswer.length;
           yourGivenAnswer = state.yourGivenAnswer;
-          print(correctAnswerCount);
+          userInputAnswerIndexList = state.userInputAnswerIndexList;
+          wrongAnswerReferIndexes = state.wrongAnswerReferIndexes;
+          allQuestionId = state.allQuestion;
+          correctAnswers = state.correctAnswer;
+          allStructureQuestionId = state.allStructureQuestionId;
+          correctStructureAnswers = state.allStructureQuestionId;
+
           return CircularPresentage(
             percent: correctAnswerCount / 10,
             text: "${(correctAnswerCount / 10) * 100}%",

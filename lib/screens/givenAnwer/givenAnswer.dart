@@ -22,20 +22,54 @@ class _GivenAnswerState extends State<GivenAnswer> {
 
   List mcqQuestion = [];
   List questionsListforAnswerSheet = [];
-  Map yourGivenAnswer = {};
+  List StructureQuestionsListforAnswerSheet = [];
+  Map<String, dynamic> yourGivenAnswer = {};
+  Map<String, dynamic> userInputAnswerIndexList = {};
   TextEditingController controller = TextEditingController();
+  List wrongAnswerReferIndexes = [];
+  List<dynamic> allQuestionId = [];
+  List<dynamic> correctAnswers = [];
+  List<dynamic> allStructureQuestionId = [];
+  List<dynamic> correctStructureAnswers = [];
+
   @override
   Widget build(BuildContext context) {
     FirebaseBloc firebaseblock = BlocProvider.of<FirebaseBloc>(context);
     return Scaffold(
         appBar: AppBar(
           title: Text('Answers'),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {
+              firebaseblock.add(solutionPart2Event(
+                wrongAnswerReferIndexes,
+                allQuestionId,
+                correctAnswers,
+                allStructureQuestionId,
+                correctStructureAnswers,
+                yourGivenAnswer,
+                userInputAnswerIndexList,
+              ));
+
+              Navigator.pop(context);
+            },
+          ),
         ),
         body:
             BlocBuilder<FirebaseBloc, FirebaseState>(builder: (context, state) {
           if (state is answerSheetState) {
             questionsListforAnswerSheet = state.questionsListforAnswerSheet;
+            StructureQuestionsListforAnswerSheet =
+                state.StructureQuestionsListforAnswerSheet;
             yourGivenAnswer = state.yourGivenAnswer;
+            userInputAnswerIndexList = state.userInputAnswerIndexList;
+            wrongAnswerReferIndexes = state.wrongAnswerReferIndexes;
+            allQuestionId = state.allQuestionId;
+            correctAnswers = state.correctAnswers;
+            allStructureQuestionId = state.allStructureQuestionId;
+            correctStructureAnswers = state.correctStructureAnswers;
+
+            print(userInputAnswerIndexList);
             return SingleChildScrollView(
               physics: AlwaysScrollableScrollPhysics(),
               child: Column(
@@ -91,17 +125,22 @@ class _GivenAnswerState extends State<GivenAnswer> {
                   ListView.builder(
                       physics: NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
-                      itemCount: 5,
+                      itemCount: StructureQuestionsListforAnswerSheet.length,
                       itemBuilder: (context, index) {
                         return Column(
                           children: [
-                            Texts(text: 'text'),
+                            Texts(
+                                text:
+                                    StructureQuestionsListforAnswerSheet[index]
+                                        ['questions']),
                             TextFormFields(
-                              text: '$index',
+                              text: '${userInputAnswerIndexList['$index']}',
                               controller: controller,
                               isEnable: false,
                             ),
-                            Texts(text: 'Correct Answer: '),
+                            Texts(
+                                text:
+                                    'Correct Answer:  ${StructureQuestionsListforAnswerSheet[index]['answer']}'),
                             SizedBox(
                               height: 100,
                             )

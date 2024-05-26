@@ -25,30 +25,64 @@ class solutionState extends FirebaseState {
   List wrongAnswerReferIndexes;
   List wrongStructureAnswerReferIndexes;
   List correctAnswer;
-   Map<String, dynamic> yourGivenAnswer;
-        Map<String, dynamic> userInputAnswerIndexList ;
-
+  Map<String, dynamic> yourGivenAnswer;
+ 
   solutionState(
       {required this.wrongAnswerReferIndexes,
-      required this.wrongStructureAnswerReferIndexes,required this.yourGivenAnswer, required this.userInputAnswerIndexList,required this.correctAnswer});
+      required this.wrongStructureAnswerReferIndexes,
+      required this.yourGivenAnswer,
+      
+      required this.correctAnswer});
 }
 
 class solutionPart2State extends FirebaseState {
   List solutionList;
   List finalSolutionList;
   List finalSolutionToDo;
+  List wrongAnswerReferIndexes;
+  List allQuestion;
+  List correctAnswer;
+  List allStructureQuestionId;
+   List correctStructureAnswers ;
 
+  Map<String, dynamic> yourGivenAnswer;
+  Map<String, dynamic> userInputAnswerIndexList;
   solutionPart2State(
       {required this.finalSolutionList,
       required this.solutionList,
-      required this.finalSolutionToDo});
+      required this.finalSolutionToDo,
+      required this.wrongAnswerReferIndexes,
+      required this.allQuestion,
+      required this.yourGivenAnswer,
+      required this.userInputAnswerIndexList,
+      required this.correctAnswer,
+      required this.allStructureQuestionId,
+      required this.correctStructureAnswers,
+
+      });
 }
 
 class answerSheetState extends FirebaseState {
-  Map yourGivenAnswer;
+  Map<String, dynamic> yourGivenAnswer;
+  Map<String, dynamic> userInputAnswerIndexList;
   List questionsListforAnswerSheet;
+  
+  List StructureQuestionsListforAnswerSheet;
+  List wrongAnswerReferIndexes ;
+  List<dynamic> allQuestionId ;
+  List<dynamic> correctAnswers ;
+  List<dynamic> allStructureQuestionId ;
+  List<dynamic> correctStructureAnswers ;
 
   answerSheetState(
       {required this.yourGivenAnswer,
-      required this.questionsListforAnswerSheet});
+      required this.userInputAnswerIndexList,
+      required this.questionsListforAnswerSheet,
+      required this.StructureQuestionsListforAnswerSheet,
+      required this.wrongAnswerReferIndexes,
+      required this.allQuestionId,
+      required this.correctAnswers,
+      required this.allStructureQuestionId,
+      required this.correctStructureAnswers,
+      });
 }

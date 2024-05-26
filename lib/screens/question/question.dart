@@ -66,7 +66,6 @@ class _QuestionState extends State<Question> {
         }
       } else if (answer == answerInput[controllerIndex].text) {
         correctStructureAnswers.add(id);
-        // print("Add");
       }
 
       if (indexListStucture.contains(index1)) {
@@ -78,7 +77,7 @@ class _QuestionState extends State<Question> {
             .addAll({'$controllerIndex': answerInput[controllerIndex].text});
       }
 
-      print(userInputAnswerIndexList);
+      //print(userInputAnswerIndexList);
     });
   }
 
@@ -136,22 +135,22 @@ class _QuestionState extends State<Question> {
                           Text("${state.question[index]['questions']}"),
 
                           /// add image to strucre
-                          // FutureBuilder(
-                          //   future:
-                          //       _getImageUrl(state.question[index]['image']),
-                          //   builder: (context, snapshot) {
-                          //     if (snapshot.connectionState ==
-                          //         ConnectionState.waiting) {
-                          //       return CircularProgressIndicator();
-                          //     } else if (snapshot.hasError) {
-                          //       return Container();
-                          //     } else if (snapshot.hasData) {
-                          //       return Image.network(snapshot.data!);
-                          //     } else {
-                          //       return Text('No data');
-                          //     }
-                          //   },
-                          // ),
+                          FutureBuilder(
+                            future:
+                                _getImageUrl(state.question[index]['image']),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return CircularProgressIndicator();
+                              } else if (snapshot.hasError) {
+                                return Container();
+                              } else if (snapshot.hasData) {
+                                return Image.network(snapshot.data!);
+                              } else {
+                                return Text('No data');
+                              }
+                            },
+                          ),
                           ////
 
                           // answers for question
@@ -183,6 +182,7 @@ class _QuestionState extends State<Question> {
                             if (state is addCorrectAnswerState) {
                               yourGivenAnswer = state.userGiveAnswer;
                               correctAnswers = state.correctAnswers;
+                              print(correctAnswers);
                             }
                             return Container();
                           })
@@ -196,22 +196,22 @@ class _QuestionState extends State<Question> {
                               '${state.structureQuestionsList[index - state.questionCount]['questions']}'),
 
                           /// add image to strucre
-                          // FutureBuilder(
-                          //   future: _getImageUrl(state.structureQuestionsList[
-                          //       index - state.questionCount]['image']),
-                          //   builder: (context, snapshot) {
-                          //     if (snapshot.connectionState ==
-                          //         ConnectionState.waiting) {
-                          //       return CircularProgressIndicator();
-                          //     } else if (snapshot.hasError) {
-                          //       return Container();
-                          //     } else if (snapshot.hasData) {
-                          //       return Image.network(snapshot.data!);
-                          //     } else {
-                          //       return Text('No data');
-                          //     }
-                          //   },
-                          // ),
+                          FutureBuilder(
+                            future: _getImageUrl(state.structureQuestionsList[
+                                index - state.questionCount]['image']),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return CircularProgressIndicator();
+                              } else if (snapshot.hasError) {
+                                return Container();
+                              } else if (snapshot.hasData) {
+                                return Image.network(snapshot.data!);
+                              } else {
+                                return Text('No data');
+                              }
+                            },
+                          ),
                           ////
 
                           TextFormFields(
@@ -308,7 +308,15 @@ class _QuestionState extends State<Question> {
               wrongStuctreAnswerReferIndexes =
                   state.wrongStructureAnswerReferIndexes;
 
-              firebaseblock.add(solutionPart2Event(wrongAnswerReferIndexes));
+              firebaseblock.add(solutionPart2Event(
+                wrongAnswerReferIndexes,
+                allQuestionId,
+                correctAnswers,
+                allStructureQuestionId,
+                correctStructureAnswers,
+                yourGivenAnswer,
+                userInputAnswerIndexList,
+              ));
             }
           },
         ),
@@ -318,8 +326,19 @@ class _QuestionState extends State<Question> {
       ],
       child: FloatingActionButtons(
           onclick: () {
-            firebaseblock.add(solutionEvent(allQuestionId, correctAnswers,
-                allStructureQuestionId, correctStructureAnswers,yourGivenAnswer,userInputAnswerIndexList,));
+            if (mcqCount < pagecount) {
+              StructureQuestionCheck(
+                  allStructureQuestionId[index1 - mcqCount],
+                  structureQuestionData[index1 - mcqCount]['answer'],
+                  (index1 - mcqCount));
+            }
+            firebaseblock.add(solutionEvent(
+              allQuestionId,
+              correctAnswers,
+              allStructureQuestionId,
+              correctStructureAnswers,
+              yourGivenAnswer,
+            ));
             Navigator.push(
                 context, MaterialPageRoute(builder: (context) => Result()));
           },

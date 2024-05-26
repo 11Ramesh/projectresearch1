@@ -10,10 +10,29 @@ class solutionEvent extends FirebaseEvent {
   List correctAnswer;
   List allStructureQuestionId;
   List correctStructureAnswers;
+
+  Map<String, dynamic> yourGivenAnswer;
   
+  solutionEvent(
+      this.allQuestion,
+      this.correctAnswer,
+      this.allStructureQuestionId,
+      this.correctStructureAnswers,
+      this.yourGivenAnswer,
+     );
+}
+
+class solutionPart2Event extends FirebaseEvent {
+  List wrongAnswerReferIndexes;
+  List allQuestion;
+  List correctAnswer;
+  List allStructureQuestionId;
+  List correctStructureAnswers;
+
   Map<String, dynamic> yourGivenAnswer;
   Map<String, dynamic> userInputAnswerIndexList;
-  solutionEvent(
+  solutionPart2Event(
+      this.wrongAnswerReferIndexes,
       this.allQuestion,
       this.correctAnswer,
       this.allStructureQuestionId,
@@ -22,12 +41,13 @@ class solutionEvent extends FirebaseEvent {
       this.userInputAnswerIndexList);
 }
 
-class solutionPart2Event extends FirebaseEvent {
-  List wrongAnswerReferIndexes;
-  solutionPart2Event(this.wrongAnswerReferIndexes);
-}
-
 class answerSheetEvent extends FirebaseEvent {
-  Map yourGivenAnswer;
-  answerSheetEvent(this.yourGivenAnswer);
+  Map<String, dynamic> yourGivenAnswer;
+  Map<String, dynamic> userInputAnswerIndexList;
+   List wrongAnswerReferIndexes = [];
+  List<dynamic> allQuestionId = [];
+  List<dynamic> correctAnswers = [];
+  List<dynamic> allStructureQuestionId = [];
+  List<dynamic> correctStructureAnswers = [];
+  answerSheetEvent(this.yourGivenAnswer,this.userInputAnswerIndexList,this.wrongAnswerReferIndexes,this.allQuestionId,this.correctAnswers,this.allStructureQuestionId,this.correctStructureAnswers);
 }

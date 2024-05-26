@@ -76,8 +76,7 @@ class FirebaseBloc extends Bloc<FirebaseEvent, FirebaseState> {
             structureQuestionCount: structureQuestionCount));
       } else if (event is solutionEvent) {
         Map<String, dynamic> yourGivenAnswer = event.yourGivenAnswer;
-        Map<String, dynamic> userInputAnswerIndexList =
-            event.userInputAnswerIndexList;
+
         //for mcq question
         List<String> allQuestion = event.allQuestion.toList().cast<String>();
         List<String> correctAnswer =
@@ -127,26 +126,58 @@ class FirebaseBloc extends Bloc<FirebaseEvent, FirebaseState> {
         emit(solutionState(
             wrongAnswerReferIndexes: wrongAnswerReferIndexes,
             wrongStructureAnswerReferIndexes: wrongStructureAnswer,
-            userInputAnswerIndexList: userInputAnswerIndexList,
             yourGivenAnswer: yourGivenAnswer,
-            correctAnswer:correctAnswer
-            ));
+            correctAnswer: correctAnswer));
 
         //
       } else if (event is answerSheetEvent) {
-        Map yourGivenAnswer = event.yourGivenAnswer;
+        Map<String, dynamic> yourGivenAnswer = event.yourGivenAnswer;
+        Map<String, dynamic> userInputAnswerIndexList =
+            event.userInputAnswerIndexList;
         List questionsListforAnswerSheet = [];
+        List structureQuestionsListforAnswerSheet = [];
+
+        List wrongAnswerReferIndexes = event.wrongAnswerReferIndexes;
+        List<dynamic> allQuestionId = event.allQuestionId;
+        List<dynamic> correctAnswers = event.correctAnswers;
+        List<dynamic> allStructureQuestionId = event.allStructureQuestionId;
+        List<dynamic> correctStructureAnswers = event.correctStructureAnswers;
         QuerySnapshot querySnapshot = await mcq1.get();
+        QuerySnapshot querySnapshot1 = await structure.get();
 
         for (var mcq in querySnapshot.docs) {
           data = mcq.data() as Map<String, dynamic>;
           questionsListforAnswerSheet.add(data);
         }
+        for (var structre in querySnapshot1.docs) {
+          data = structre.data() as Map<String, dynamic>;
+          structureQuestionsListforAnswerSheet.add(data);
+        }
+
         emit(answerSheetState(
             yourGivenAnswer: yourGivenAnswer,
-            questionsListforAnswerSheet: questionsListforAnswerSheet));
-      } else if (event is solutionPart2Event) {
+            questionsListforAnswerSheet: questionsListforAnswerSheet,
+            userInputAnswerIndexList: userInputAnswerIndexList,
+            StructureQuestionsListforAnswerSheet:
+                structureQuestionsListforAnswerSheet,
+            wrongAnswerReferIndexes: wrongAnswerReferIndexes,
+            allQuestionId: allQuestionId,
+            correctAnswers: correctAnswers,
+            allStructureQuestionId: allStructureQuestionId,
+            correctStructureAnswers: correctStructureAnswers));
+      }
+
+      ///
+      else if (event is solutionPart2Event) {
         wrongAnswerReferIndexes = event.wrongAnswerReferIndexes;
+        List allQuestion = event.allQuestion;
+        List correctAnswer = event.correctAnswer;
+        List allStructureQuestionId = event.allStructureQuestionId;
+        List correctStructureAnswers = event.correctStructureAnswers;
+
+        Map<String, dynamic> yourGivenAnswer = event.yourGivenAnswer;
+        Map<String, dynamic> userInputAnswerIndexList =
+            event.userInputAnswerIndexList;
 
         await solution.get().then((QuerySnapshot snapshot) {
           //get solution collection id
@@ -207,7 +238,14 @@ class FirebaseBloc extends Bloc<FirebaseEvent, FirebaseState> {
           emit(solutionPart2State(
               finalSolutionList: finalSolutionList,
               solutionList: solutionList,
-              finalSolutionToDo: finalSolutionToDo));
+              finalSolutionToDo: finalSolutionToDo,
+              wrongAnswerReferIndexes: wrongAnswerReferIndexes,
+              allQuestion: allQuestion,
+              yourGivenAnswer: yourGivenAnswer,
+              userInputAnswerIndexList: userInputAnswerIndexList,
+              correctAnswer: correctAnswer,
+              allStructureQuestionId: allStructureQuestionId,
+              correctStructureAnswers: correctStructureAnswers));
         });
       }
     });
