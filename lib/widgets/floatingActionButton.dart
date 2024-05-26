@@ -4,12 +4,12 @@ import 'package:projectresearch/consts/size/screenSize.dart';
 
 class FloatingActionButtons extends StatelessWidget {
   FloatingActionButtons({
-    required this.onclick,
+     this.onclick,
     required this.text,
     Key? key,
   }) : super(key: key);
 
-  VoidCallback onclick;
+  VoidCallback? onclick;
   String text;
 
   @override

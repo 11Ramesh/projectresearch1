@@ -16,7 +16,12 @@ class FloatingButtonBloc
         dynamic correctAnswer = event.correctAnswer;
         dynamic questionIndex = event.questionIndex;
         correctAnswers = event.correctAnswers;
+        int index = event.index;
+        //List userGiveAnswer = event.userSelectIndexList;
+        List indexList = event.indexList;
+        Map<String, dynamic> userGiveAnswer = event.userSelectIndexList;
 
+        // get corect answer
         if (correctAnswers.contains(questionIndex)) {
           print("have");
           if (selectAnswer == correctAnswer) {
@@ -30,7 +35,16 @@ class FloatingButtonBloc
           print("Add");
         }
 
-        emit(addCorrectAnswerState(correctAnswers: correctAnswers));
+        // get all user give answer
+        if (indexList.contains(index)) {
+          userGiveAnswer['$index'] = selectAnswer;
+        } else {
+          indexList.add(index);
+          userGiveAnswer.addAll({'$index': selectAnswer});
+        }
+
+        emit(addCorrectAnswerState(
+            correctAnswers: correctAnswers, userGiveAnswer: userGiveAnswer));
       } else if (event is TopicButtonEvent) {
         int countNumber = event.countNumber;
 
@@ -38,7 +52,7 @@ class FloatingButtonBloc
         //ispage = !ispage;
         print(countNumber);
         emit(TopicButtonState(countNumber: countNumber));
-      } 
+      }
     });
   }
 }

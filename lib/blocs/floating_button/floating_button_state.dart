@@ -7,8 +7,9 @@ class FloatingButtonInitial extends FloatingButtonState {}
 
 class addCorrectAnswerState extends FloatingButtonState {
   List correctAnswers;
+  Map<String, dynamic> userGiveAnswer;
 
-  addCorrectAnswerState({required this.correctAnswers});
+  addCorrectAnswerState({required this.correctAnswers,required this.userGiveAnswer});
 }
 
 class TopicButtonState extends FloatingButtonState {

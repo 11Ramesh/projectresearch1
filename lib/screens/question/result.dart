@@ -3,6 +3,7 @@ import 'package:projectresearch/blocs/firebase/firebase_bloc.dart';
 import 'package:projectresearch/blocs/floating_button/floating_button_bloc.dart';
 import 'package:projectresearch/consts/colors/colors.dart';
 import 'package:projectresearch/consts/size/screenSize.dart';
+import 'package:projectresearch/screens/givenAnwer/givenAnswer.dart';
 
 import 'package:projectresearch/screens/solution/solutionTopics.dart';
 import 'package:projectresearch/widgets/circularPresentage.dart';
@@ -20,11 +21,15 @@ class Result extends StatefulWidget {
 @override
 class _ResultState extends State<Result> {
   List solutionForWrongAnswer = [];
+  Map<String, dynamic> yourGivenAnswer = {};
+  Map<String, dynamic> userInputAnswerIndexList = {};
+  int correctAnswerCount = 0;
 
   @override
   Widget build(BuildContext context) {
     FloatingButtonBloc floatingButtonBloc =
         BlocProvider.of<FloatingButtonBloc>(context);
+    FirebaseBloc firebaseblock = BlocProvider.of<FirebaseBloc>(context);
     return Scaffold(
       appBar: AppBar(),
       body: SingleChildScrollView(
@@ -44,23 +49,35 @@ class _ResultState extends State<Result> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButtons(
-          onclick: () {
-            floatingButtonBloc.add(TopicButtonEvent(-1));
+      floatingActionButton: Row(
+        children: [
+          FloatingActionButtons(
+              onclick: () {
+                floatingButtonBloc.add(TopicButtonEvent(-1));
 
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => SolutionTopics()));
-          },
-          text: "පාඩම් මාලාවට යොමුවන්න"),
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => SolutionTopics()));
+              },
+              text: "පාඩම් මාලාවට යොමුවන්න"),
+          FloatingActionButtons(
+              onclick: () {
+                firebaseblock.add(answerSheetEvent(yourGivenAnswer));
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => GivenAnswer()));
+              },
+              text: "your answer "),
+        ],
+      ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 
   Widget presentage() {
-    return BlocBuilder<FloatingButtonBloc, FloatingButtonState>(
+    return BlocBuilder<FirebaseBloc, FirebaseState>(
       builder: (context, state) {
-        if (state is addCorrectAnswerState) {
-          int correctAnswerCount = state.correctAnswers.length;
+        if (state is solutionState) {
+          correctAnswerCount = state.correctAnswer.length;
+          yourGivenAnswer = state.yourGivenAnswer;
           print(correctAnswerCount);
           return CircularPresentage(
             percent: correctAnswerCount / 10,
@@ -77,7 +94,6 @@ class _ResultState extends State<Result> {
   }
 
   Widget solutionList() {
-    FirebaseBloc firebaseBloc = BlocProvider.of<FirebaseBloc>(context);
     return BlocBuilder<FirebaseBloc, FirebaseState>(
       builder: (context, state) {
         if (state is solutionPart2State) {

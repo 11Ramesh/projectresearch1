@@ -24,8 +24,13 @@ class addQuestionState extends FirebaseState {
 class solutionState extends FirebaseState {
   List wrongAnswerReferIndexes;
   List wrongStructureAnswerReferIndexes;
+  List correctAnswer;
+   Map<String, dynamic> yourGivenAnswer;
+        Map<String, dynamic> userInputAnswerIndexList ;
 
-  solutionState({required this.wrongAnswerReferIndexes,required this.wrongStructureAnswerReferIndexes});
+  solutionState(
+      {required this.wrongAnswerReferIndexes,
+      required this.wrongStructureAnswerReferIndexes,required this.yourGivenAnswer, required this.userInputAnswerIndexList,required this.correctAnswer});
 }
 
 class solutionPart2State extends FirebaseState {
@@ -34,5 +39,16 @@ class solutionPart2State extends FirebaseState {
   List finalSolutionToDo;
 
   solutionPart2State(
-      {required this.finalSolutionList, required this.solutionList,required this.finalSolutionToDo});
+      {required this.finalSolutionList,
+      required this.solutionList,
+      required this.finalSolutionToDo});
+}
+
+class answerSheetState extends FirebaseState {
+  Map yourGivenAnswer;
+  List questionsListforAnswerSheet;
+
+  answerSheetState(
+      {required this.yourGivenAnswer,
+      required this.questionsListforAnswerSheet});
 }

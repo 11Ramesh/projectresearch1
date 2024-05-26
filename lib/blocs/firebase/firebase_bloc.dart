@@ -75,6 +75,9 @@ class FirebaseBloc extends Bloc<FirebaseEvent, FirebaseState> {
             structureQuestionId: structureQuestionId,
             structureQuestionCount: structureQuestionCount));
       } else if (event is solutionEvent) {
+        Map<String, dynamic> yourGivenAnswer = event.yourGivenAnswer;
+        Map<String, dynamic> userInputAnswerIndexList =
+            event.userInputAnswerIndexList;
         //for mcq question
         List<String> allQuestion = event.allQuestion.toList().cast<String>();
         List<String> correctAnswer =
@@ -120,23 +123,28 @@ class FirebaseBloc extends Bloc<FirebaseEvent, FirebaseState> {
           wrongAnswerReferIndexes.add(referIndex);
         }
 
-        // for (var wrongAnswerId in wrongAnswer) {
-        //   var mc = await mcq1.doc(wrongAnswerId).get();
-        //   var studentData = mc.data() as Map<String, dynamic>;
-        //   var referIndex = studentData['referindex'];
-
-        //   // Add referIndex to the list
-        //   wrongAnswerReferIndexes.add(referIndex);
-        // }
-
-        print(wrongAnswerReferIndexes);
-
         // send the wrongAnswerReferIndexes to font end
         emit(solutionState(
             wrongAnswerReferIndexes: wrongAnswerReferIndexes,
-            wrongStructureAnswerReferIndexes: wrongStructureAnswer));
+            wrongStructureAnswerReferIndexes: wrongStructureAnswer,
+            userInputAnswerIndexList: userInputAnswerIndexList,
+            yourGivenAnswer: yourGivenAnswer,
+            correctAnswer:correctAnswer
+            ));
 
         //
+      } else if (event is answerSheetEvent) {
+        Map yourGivenAnswer = event.yourGivenAnswer;
+        List questionsListforAnswerSheet = [];
+        QuerySnapshot querySnapshot = await mcq1.get();
+
+        for (var mcq in querySnapshot.docs) {
+          data = mcq.data() as Map<String, dynamic>;
+          questionsListforAnswerSheet.add(data);
+        }
+        emit(answerSheetState(
+            yourGivenAnswer: yourGivenAnswer,
+            questionsListforAnswerSheet: questionsListforAnswerSheet));
       } else if (event is solutionPart2Event) {
         wrongAnswerReferIndexes = event.wrongAnswerReferIndexes;
 
