@@ -32,7 +32,7 @@ class _VideoPageState extends State<VideoPage> {
     floatingButtonBloc = BlocProvider.of<FloatingButtonBloc>(context);
   }
 
-  @override
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
