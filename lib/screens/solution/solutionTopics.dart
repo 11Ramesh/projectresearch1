@@ -12,6 +12,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:projectresearch/screens/solution/summery.dart';
 import 'package:projectresearch/screens/solution/video.dart';
 import 'package:projectresearch/widgets/elevatedButton.dart';
+import 'package:projectresearch/widgets/floatingActionButton.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SolutionTopics extends StatefulWidget {
   @override
@@ -24,31 +26,30 @@ class _SolutionTopicsState extends State<SolutionTopics> {
   int index = 0;
   late FloatingButtonBloc floatingButtonBloc;
   late CheckBloc checkBlocs;
-  int time = 0;
+
   int topicCount = 0;
   bool isFinishButton = false;
-
-  timer() {
-    Timer.periodic(Duration(seconds: 1), (timer) {
-      setState(() {
-        print(time++);
-      });
-    });
-  }
+  
 
   @override
   void initState() {
     floatingButtonBloc = BlocProvider.of<FloatingButtonBloc>(context);
     checkBlocs = BlocProvider.of<CheckBloc>(context);
-    // timer();
+   
     super.initState();
   }
+
+  
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('$time'),
+          leading: IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: Icon(Icons.arrow_back_ios_new)),
         ),
         body: BlocBuilder<FirebaseBloc, FirebaseState>(
           builder: (context, state) {
@@ -114,15 +115,18 @@ class _SolutionTopicsState extends State<SolutionTopics> {
               isFinishButton = true;
             }
           }
-          return FloatingActionButton(
-            onPressed: isFinishButton
-                ? () {
+          return isFinishButton
+              ? FloatingActionButtons(
+                  text: 'Finish',
+                  onclick: () {
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) => Summery()));
-                  }
-                : null,
-            child: Text("Finish"),
-          );
+                  },
+                )
+              : FloatingActionButtons(
+                  text: 'Finish',
+                  backgroundColor: Color.fromRGBO(158, 158, 158, 0.679),
+                );
         }));
   }
 }

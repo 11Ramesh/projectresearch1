@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:projectresearch/blocs/firebase/firebase_bloc.dart';
 import 'package:projectresearch/blocs/floating_button/floating_button_bloc.dart';
@@ -10,6 +12,7 @@ import 'package:projectresearch/widgets/circularPresentage.dart';
 import 'package:projectresearch/widgets/floatingActionButton.dart';
 import 'package:projectresearch/widgets/text.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Result extends StatefulWidget {
   const Result({super.key});
@@ -29,6 +32,32 @@ class _ResultState extends State<Result> {
   List<dynamic> correctAnswers = [];
   List<dynamic> allStructureQuestionId = [];
   List<dynamic> correctStructureAnswers = [];
+
+  late SharedPreferences startTime;
+  String time = '';
+
+  @override
+  void initState() {
+    getTime();
+    super.initState();
+  }
+
+  getTime() async {
+    startTime = await SharedPreferences.getInstance();
+  }
+
+  storeTime() {
+    time = DateTime.now().toString();
+    startTime.setString('StartTime', time);
+  }
+
+  // timerStart() {
+  //   timer = Timer.periodic(Duration(seconds: 1), (timer) {
+  //     setState(() {
+  //       print(time++);
+  //     });
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -58,6 +87,7 @@ class _ResultState extends State<Result> {
         children: [
           FloatingActionButtons(
               onclick: () {
+                storeTime();
                 floatingButtonBloc.add(TopicButtonEvent(-1));
 
                 Navigator.push(context,
