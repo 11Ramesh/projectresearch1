@@ -58,7 +58,8 @@ class _QuestionState extends State<Question> {
     setState(() {
       if (correctStructureAnswers.contains(id)) {
         //print("have");
-        if (answer == answerInput[controllerIndex].text) {
+        if (answer.toLowerCase() ==
+            answerInput[controllerIndex].text.toLowerCase()) {
           //  print("Do not repeate");
         } else {
           correctStructureAnswers.remove(id);

@@ -1,5 +1,5 @@
 import 'package:bloc/bloc.dart';
-import 'package:device_preview/device_preview.dart';
+
 import 'package:meta/meta.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';

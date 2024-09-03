@@ -125,11 +125,14 @@ class _ResultState extends State<Result> {
           allQuestionId = state.allQuestion;
           correctAnswers = state.correctAnswer;
           allStructureQuestionId = state.allStructureQuestionId;
-          correctStructureAnswers = state.allStructureQuestionId;
+          correctStructureAnswers = state.correctStructureAnswers;
+          print(correctStructureAnswers);
+          print(correctAnswers);
 
           return CircularPresentage(
-            percent: correctAnswerCount / 10,
-            text: "${(correctAnswerCount / 10) * 100}%",
+            percent: (correctAnswerCount + correctStructureAnswers.length) / 10,
+            text:
+                "${((correctAnswerCount + correctStructureAnswers.length) / 10) * 100}%",
           );
         } else {
           return CircularPresentage(
