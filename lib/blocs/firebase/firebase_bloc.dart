@@ -13,7 +13,8 @@ class FirebaseBloc extends Bloc<FirebaseEvent, FirebaseState> {
       SharedPreferences mcq = await SharedPreferences.getInstance();
       int? mcqNo = mcq.getInt('mcq');
       //collection for question mcq
-      CollectionReference mcq1 = FirebaseFirestore.instance.collection("mcq1");
+      CollectionReference mcq1 =
+          FirebaseFirestore.instance.collection("mcq${mcqNo.toString()}");
 
       //collection for solution
       CollectionReference solution =
@@ -21,7 +22,7 @@ class FirebaseBloc extends Bloc<FirebaseEvent, FirebaseState> {
 
       //collection for question structure
       CollectionReference structure =
-          FirebaseFirestore.instance.collection("structure1");
+          FirebaseFirestore.instance.collection("structure${mcqNo.toString()}");
 
       List questionsList = [];
       List structureQuestionsList = [];
@@ -33,10 +34,17 @@ class FirebaseBloc extends Bloc<FirebaseEvent, FirebaseState> {
       int questionCount = 0;
       int structureQuestionCount = 0;
       List solutionList = [];
-      List kotasweladapola = [];
-      List samantharasheni = [];
-      List baaga = [];
+      List kulaka = [];
+      List samikarana = [];
+      List vijiyabaaga = [];
       List prethishatha = [];
+      List shreni = [];
+      List vargapalaya = [];
+      List parimaawa = [];
+      List trikona = [];
+      List samakonitrikona = [];
+      List trikonamithiya = [];
+
       List finalSolutionList = [];
       List finalSolutionToDo = [];
 
@@ -198,42 +206,91 @@ class FirebaseBloc extends Bloc<FirebaseEvent, FirebaseState> {
 
           // data devide to multiple topics
           solutionList.forEach((element) {
-            if (element['topic'] == 'කොටස් වෙළඳපොළ') {
-              kotasweladapola.add(element);
-            } else if (element['topic'] == 'සමාන්තර ශ්‍රේණි') {
-              samantharasheni.add(element);
-            } else if (element['topic'] == 'භාග') {
-              baaga.add(element);
+            if (element['topic'] == 'කුළක') {
+              kulaka.add(element);
+            } else if (element['topic'] == 'සමීකරණ') {
+              samikarana.add(element);
+            } else if (element['topic'] == 'වීජීය භාග') {
+              vijiyabaaga.add(element);
             } else if (element['topic'] == 'ප්‍රතිශත') {
               prethishatha.add(element);
+            } else if (element['topic'] ==
+                'සමාන්තර ශ්‍රේඪි හා ගුණෝත්තර ශ්‍රේඪි') {
+              shreni.add(element);
+            } else if (element['topic'] == 'ඝණ වස්තු වල පෘශ්ථ වර්ගඵලය') {
+              vargapalaya.add(element);
+            } else if (element['topic'] == 'ඝණ වස්තු වල පරිමාව') {
+              parimaawa.add(element);
+            } else if (element['topic'] == 'ත්‍රිකෝණ') {
+              trikona.add(element);
+            } else if (element['topic'] == 'සමකෝණී ත්‍රිකෝණ') {
+              samakonitrikona.add(element);
+            } else if (element['topic'] == 'ත්‍රිකෝණමිතිය') {
+              trikonamithiya.add(element);
             }
           });
-          if (kotasweladapola.length != 0) {
-            finalSolutionList.add(kotasweladapola);
+          if (kulaka.length != 0) {
+            finalSolutionList.add(kulaka);
           }
-          if (samantharasheni.length != 0) {
-            finalSolutionList.add(samantharasheni);
+          if (samikarana.length != 0) {
+            finalSolutionList.add(samikarana);
           }
-          if (baaga.length != 0) {
-            finalSolutionList.add(baaga);
+          if (vijiyabaaga.length != 0) {
+            finalSolutionList.add(vijiyabaaga);
           }
           if (prethishatha.length != 0) {
             finalSolutionList.add(prethishatha);
           }
+          if (shreni.length != 0) {
+            finalSolutionList.add(shreni);
+          }
+          if (vargapalaya.length != 0) {
+            finalSolutionList.add(vargapalaya);
+          }
+          if (trikona.length != 0) {
+            finalSolutionList.add(trikona);
+          }
+          if (samakonitrikona.length != 0) {
+            finalSolutionList.add(samakonitrikona);
+          }
+          if (trikonamithiya.length != 0) {
+            finalSolutionList.add(trikonamithiya);
+          }
+          if (parimaawa.length != 0) {
+            finalSolutionList.add(parimaawa);
+          }
 
-          if (kotasweladapola.length > 2) {
-            finalSolutionToDo.add(kotasweladapola);
+          if (kulaka.length > 2) {
+            finalSolutionToDo.add(kulaka);
           }
-          if (samantharasheni.length > 2) {
-            finalSolutionToDo.add(samantharasheni);
+          if (samikarana.length > 2) {
+            finalSolutionToDo.add(samikarana);
           }
-          if (baaga.length > 2) {
-            finalSolutionToDo.add(baaga);
+          if (vijiyabaaga.length > 2) {
+            finalSolutionToDo.add(vijiyabaaga);
           }
           if (prethishatha.length > 2) {
             finalSolutionToDo.add(prethishatha);
           }
-
+          if (shreni.length > 2) {
+            finalSolutionToDo.add(shreni);
+          }
+          if (vargapalaya.length > 2) {
+            finalSolutionToDo.add(vargapalaya);
+          }
+          if (parimaawa.length > 2) {
+            finalSolutionToDo.add(parimaawa);
+          }
+          if (trikona.length > 2) {
+            finalSolutionToDo.add(trikona);
+          }
+          if (samakonitrikona.length > 2) {
+            finalSolutionToDo.add(samakonitrikona);
+          }
+          if (trikonamithiya.length > 2) {
+            finalSolutionToDo.add(trikonamithiya);
+          }
+          print(yourGivenAnswer);
           // data send to solutionPart2State from the this state
           emit(solutionPart2State(
               finalSolutionList: finalSolutionList,

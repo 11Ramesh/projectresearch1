@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:projectresearch/consts/colors/colors.dart';
 
 class TextFormFields extends StatelessWidget {
   final double? fontSize;
@@ -23,9 +24,19 @@ class TextFormFields extends StatelessWidget {
         controller: controller,
         style: TextStyle(fontSize: fontSize),
         decoration: InputDecoration(
+          filled: true,
+          fillColor: Color.fromARGB(129, 211, 211, 211),
           hintText: text,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: BorderSide(color: Colors.grey),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: BorderSide(color: Colors.grey),
           ),
         ),
       ),

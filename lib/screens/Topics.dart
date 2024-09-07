@@ -6,6 +6,7 @@ import 'package:projectresearch/widgets/appbar.dart';
 import 'package:projectresearch/widgets/floatingActionButton.dart';
 import 'package:projectresearch/widgets/Topiclistview.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:projectresearch/widgets/text.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -21,7 +22,10 @@ class _HomeState extends State<Home> {
       appBar: MainAppbar(),
       body: Scaffold(
         appBar: AppBar(
-          title: const Text("Topics"),
+          title: const Text(
+            "මාතෘකා",
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
           centerTitle: true,
         ),
         body: Padding(
@@ -45,7 +49,13 @@ class _HomeState extends State<Home> {
               text: "මිලග"),
         ],
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      // FloatingActionButtons(
+      //     onclick: () {
+      //       Navigator.push(context,
+      //           MaterialPageRoute(builder: (context) => Instruction()));
+      //     },
+      //     text: "මිලග"),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }

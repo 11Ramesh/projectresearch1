@@ -1,15 +1,22 @@
 import 'dart:async';
 
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:projectresearch/blocs/firebase/firebase_bloc.dart';
 import 'package:projectresearch/blocs/floating_button/floating_button_bloc.dart';
 import 'package:projectresearch/consts/colors/colors.dart';
 import 'package:projectresearch/consts/size/screenSize.dart';
+import 'package:projectresearch/main.dart';
+import 'package:projectresearch/screens/Instructions.dart';
+import 'package:projectresearch/screens/Topics.dart';
 import 'package:projectresearch/screens/givenAnwer/givenAnswer.dart';
 
 import 'package:projectresearch/screens/solution/solutionTopics.dart';
 import 'package:projectresearch/widgets/circularPresentage.dart';
 import 'package:projectresearch/widgets/floatingActionButton.dart';
+import 'package:projectresearch/widgets/height.dart';
+import 'package:projectresearch/widgets/loading.dart';
 import 'package:projectresearch/widgets/text.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -59,58 +66,105 @@ class _ResultState extends State<Result> {
   //   });
   // }
 
+  void showPageLeaveOrNot(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('දැනුම්දීම'),
+          content: Text('ඔබට පිටුව හැරදා යාමට අවශ්‍යද ?'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('ඔව්'),
+              onPressed: () async {
+                Navigator.push(
+                    context, MaterialPageRoute(builder: (context) => MyApp()));
+              },
+            ),
+            TextButton(
+              child: Text('නැත'),
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     FloatingButtonBloc floatingButtonBloc =
         BlocProvider.of<FloatingButtonBloc>(context);
     FirebaseBloc firebaseblock = BlocProvider.of<FirebaseBloc>(context);
-    return Scaffold(
-      appBar: AppBar(),
-      body: SingleChildScrollView(
-        physics: const AlwaysScrollableScrollPhysics(),
-        child: Column(
-          children: [
-            Texts(text: "ඔබගේ ප්‍රතිඵලය"),
-            SizedBox(
-              height: 50,
-            ),
-            presentage(),
-            SizedBox(
-              height: 20,
-            ),
-            Texts(text: "ඔබ අවදානය යොමුකල යුතු පාඩාම්"),
-            solutionList(),
-          ],
+    return WillPopScope(
+      onWillPop: () async {
+        showPageLeaveOrNot(context);
+        return false;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
         ),
-      ),
-      floatingActionButton: Row(
-        children: [
-          FloatingActionButtons(
-              onclick: () {
-                storeTime();
-                floatingButtonBloc.add(TopicButtonEvent(-1));
+        body: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: Column(
+            children: [
+              Texts(text: "ඔබගේ ප්‍රතිඵලය"),
+              SizedBox(
+                height: 50,
+              ),
+              presentage(),
+              SizedBox(
+                height: 20,
+              ),
+              //Texts(text: "ඔබ අවදානය යොමුකල යුතු පාඩාම්"),
+              solutionList(),
+            ],
+          ),
+        ),
+        floatingActionButton: BlocBuilder<FirebaseBloc, FirebaseState>(
+          builder: (context, state) {
+            if (state is solutionPart2State) {
+              return Row(
+                children: [
+                  FloatingActionButtons(
+                      onclick: () {
+                        storeTime();
+                        floatingButtonBloc.add(TopicButtonEvent(-1));
 
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => SolutionTopics()));
-              },
-              text: "පාඩම් මාලාවට යොමුවන්න"),
-          FloatingActionButtons(
-              onclick: () {
-                firebaseblock.add(answerSheetEvent(
-                    yourGivenAnswer,
-                    userInputAnswerIndexList,
-                    wrongAnswerReferIndexes,
-                    allQuestionId,
-                    correctAnswers,
-                    allStructureQuestionId,
-                    correctStructureAnswers));
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => GivenAnswer()));
-              },
-              text: "your answer "),
-        ],
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => SolutionTopics()));
+                      },
+                      text: "පාඩම් මාලාවට යොමුවන්න"),
+                  FloatingActionButtons(
+                      onclick: () {
+                        firebaseblock.add(answerSheetEvent(
+                            yourGivenAnswer,
+                            userInputAnswerIndexList,
+                            wrongAnswerReferIndexes,
+                            allQuestionId,
+                            correctAnswers,
+                            allStructureQuestionId,
+                            correctStructureAnswers));
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => GivenAnswer()));
+                      },
+                      text: "your answer "),
+                ],
+              );
+            } else {
+              return Container();
+            }
+          },
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 
@@ -126,19 +180,21 @@ class _ResultState extends State<Result> {
           correctAnswers = state.correctAnswer;
           allStructureQuestionId = state.allStructureQuestionId;
           correctStructureAnswers = state.correctStructureAnswers;
-          print(correctStructureAnswers);
-          print(correctAnswers);
-
+          // print(correctStructureAnswers);
+          // print(correctAnswers);
+          if (correctAnswerCount + correctStructureAnswers.length == 0) {
+            return CircularPresentage(
+              percent: 0,
+              text: "0%",
+            );
+          }
           return CircularPresentage(
-            percent: (correctAnswerCount + correctStructureAnswers.length) / 10,
+            percent: (correctAnswerCount + correctStructureAnswers.length) / 50,
             text:
-                "${((correctAnswerCount + correctStructureAnswers.length) / 10) * 100}%",
+                "${((correctAnswerCount + correctStructureAnswers.length) / 50) * 100}%",
           );
         } else {
-          return CircularPresentage(
-            percent: 0,
-            text: "0%",
-          );
+          return Container();
         }
       },
     );
@@ -191,7 +247,12 @@ class _ResultState extends State<Result> {
             return Text("congragulation");
           }
         } else {
-          return CircularProgressIndicator();
+          return Column(
+            children: [
+              Height(height: 0.2),
+              Loading(),
+            ],
+          );
         }
       },
     );

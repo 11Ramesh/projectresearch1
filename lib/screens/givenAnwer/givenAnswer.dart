@@ -1,5 +1,9 @@
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:projectresearch/blocs/firebase/firebase_bloc.dart';
+import 'package:projectresearch/consts/size/screenSize.dart';
+import 'package:projectresearch/widgets/imageLoading.dart';
+import 'package:projectresearch/widgets/loading.dart';
 import 'package:projectresearch/widgets/surveyoption.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:projectresearch/widgets/text.dart';
@@ -31,6 +35,11 @@ class _GivenAnswerState extends State<GivenAnswer> {
   List<dynamic> correctAnswers = [];
   List<dynamic> allStructureQuestionId = [];
   List<dynamic> correctStructureAnswers = [];
+
+  Future<String> _getImageUrl(String imageUrl) async {
+    final Reference ref = FirebaseStorage.instance.ref().child(imageUrl);
+    return await ref.getDownloadURL();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -96,17 +105,42 @@ class _GivenAnswerState extends State<GivenAnswer> {
                                   '${questionsListforAnswerSheet[index]['questions']}',
                             ),
                           ),
+                          //mcq
+                          FutureBuilder(
+                            future: _getImageUrl(state
+                                .questionsListforAnswerSheet[index]['image']),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return ImageLoading();
+                              } else if (snapshot.hasError) {
+                                return Container();
+                              } else if (snapshot.hasData) {
+                                return Container(
+                                    width: ScreenUtil.screenWidth * 0.6,
+                                    height: ScreenUtil.screenWidth * 0.6,
+                                    child: Image.network(snapshot.data!));
+                              } else {
+                                return Text('No data');
+                              }
+                            },
+                          ),
                           for (int i = 0; i < 4; i++)
                             SurveyOption(
                               text: questionsListforAnswerSheet[index]
                                   ['${i + 1}'],
                               color: i ==
-                                      questionsListforAnswerSheet[index]
-                                          ['correctAnswerIndex']
-                                  ? Colors.amber
-                                  : i == yourGivenAnswer['$index']
-                                      ? Colors.red
-                                      : Colors.transparent,
+                                          questionsListforAnswerSheet[index]
+                                              ['correctAnswerIndex'] &&
+                                      i == yourGivenAnswer['$index']
+                                  ? Colors.green
+                                  : i ==
+                                          questionsListforAnswerSheet[index]
+                                              ['correctAnswerIndex']
+                                      ? Colors.amber
+                                      : i == yourGivenAnswer['$index']
+                                          ? Colors.red
+                                          : Colors.transparent,
                               icon: i ==
                                       questionsListforAnswerSheet[index]
                                           ['correctAnswerIndex']
@@ -133,6 +167,26 @@ class _GivenAnswerState extends State<GivenAnswer> {
                                 text:
                                     StructureQuestionsListforAnswerSheet[index]
                                         ['questions']),
+                            FutureBuilder(
+                              future: _getImageUrl(
+                                  StructureQuestionsListforAnswerSheet[index]
+                                      ['image']),
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return ImageLoading();
+                                } else if (snapshot.hasError) {
+                                  return Container();
+                                } else if (snapshot.hasData) {
+                                  return Container(
+                                      width: ScreenUtil.screenWidth * 0.6,
+                                      height: ScreenUtil.screenWidth * 0.6,
+                                      child: Image.network(snapshot.data!));
+                                } else {
+                                  return Text('No data');
+                                }
+                              },
+                            ),
                             TextFormFields(
                               text: '${userInputAnswerIndexList['$index']}',
                               controller: controller,
@@ -151,7 +205,7 @@ class _GivenAnswerState extends State<GivenAnswer> {
               ),
             );
           } else {
-            return CircularProgressIndicator();
+            return Loading();
           }
         }));
   }

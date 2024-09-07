@@ -25,12 +25,14 @@ class _QuestionADDState extends State<QuestionADD> {
   TextEditingController answer2 = TextEditingController();
   TextEditingController answer3 = TextEditingController();
   TextEditingController answer4 = TextEditingController();
-  CollectionReference questionData = FirebaseFirestore.instance.collection("mcq1");
+  CollectionReference questionData =
+      FirebaseFirestore.instance.collection("mcq3");
   File? _image;
   String fileName = '';
 
   Future<void> getImage() async {
-    final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+    final pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
 
     setState(() {
       if (pickedFile != null) {
@@ -47,9 +49,11 @@ class _QuestionADDState extends State<QuestionADD> {
 
     img.Image resizedImage = img.copyResize(originalImage!, width: 800);
 
-    Uint8List compressedBytes = Uint8List.fromList(img.encodeJpg(resizedImage, quality: 85));
+    Uint8List compressedBytes =
+        Uint8List.fromList(img.encodeJpg(resizedImage, quality: 85));
 
-    File compressedFile = File('${file.parent.path}/compressed_${file.uri.pathSegments.last}');
+    File compressedFile =
+        File('${file.parent.path}/compressed_${file.uri.pathSegments.last}');
     await compressedFile.writeAsBytes(compressedBytes);
 
     return compressedFile;
@@ -77,7 +81,7 @@ class _QuestionADDState extends State<QuestionADD> {
         answer3.clear();
         answer4.clear();
         _image = null;
-        fileName = '';  // Clear fileName after data is added
+        fileName = ''; // Clear fileName after data is added
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
@@ -118,7 +122,8 @@ class _QuestionADDState extends State<QuestionADD> {
             pictureBox(),
             Texts(text: "Question Add", fontSize: 20),
             TextFormFields(text: "questions", controller: questions),
-            TextFormFields(text: "correctAnswerIndex", controller: correctAnswerIndex),
+            TextFormFields(
+                text: "correctAnswerIndex", controller: correctAnswerIndex),
             TextFormFields(text: "referindex", controller: referindex),
             TextFormFields(text: "answer1", controller: answer1),
             TextFormFields(text: "answer2", controller: answer2),
@@ -140,6 +145,7 @@ class _QuestionADDState extends State<QuestionADD> {
       ),
     );
   }
+
 
   Widget pictureBox() {
     return GestureDetector(

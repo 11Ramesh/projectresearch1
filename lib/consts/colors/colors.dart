@@ -8,5 +8,9 @@ class AppbarColors {
 
 class FlotingActionColors {
   static Color buttonForeGround = Color.fromARGB(255, 255, 255, 255);
-  static Color buttonBackGround = Color.fromARGB(177, 75, 102, 182);
+  static Color buttonBackGround = Color(0xFF0097B2);
+}
+
+class TextfieldColors {
+  static Color fillcolor = Color(0xFFD3D3D3);
 }

@@ -30,7 +30,7 @@ class TopicLists extends StatelessWidget {
       shrinkWrap: true,
       itemBuilder: (context, index) {
         return Padding(
-          padding: const EdgeInsets.only(top: 2, bottom: 2),
+          padding: const EdgeInsets.only(top: 2, bottom: 10),
           child: Container(
             height: height,
             decoration: BoxDecoration(
@@ -38,7 +38,10 @@ class TopicLists extends StatelessWidget {
                 border: Border.all(width: 3, color: Colors.transparent),
                 borderRadius: BorderRadius.circular(10)),
             child: ListTile(
-              title: Text("${Topics[index]}"),
+              title: Text(
+                "(${index + 1}) ${Topics[index]}",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
             ),
           ),
         );

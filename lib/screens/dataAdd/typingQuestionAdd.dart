@@ -21,7 +21,7 @@ class _TypingQuestionState extends State<TypingQuestion> {
   TextEditingController correctAnswer = TextEditingController();
   TextEditingController referindex = TextEditingController();
   CollectionReference questionData =
-      FirebaseFirestore.instance.collection("structure1");
+      FirebaseFirestore.instance.collection("structure3");
   File? _image;
   String fileName = '';
   bool isLoading = false;

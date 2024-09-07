@@ -1,12 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:projectresearch/blocs/check/check_bloc.dart';
 import 'package:projectresearch/blocs/floating_button/floating_button_bloc.dart';
+import 'package:projectresearch/consts/size/screenSize.dart';
 import 'package:projectresearch/screens/solution/solutionTopics.dart';
 import 'package:projectresearch/widgets/floatingActionButton.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:projectresearch/widgets/imageLoading.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class VideoPage extends StatefulWidget {
@@ -24,6 +27,7 @@ class _VideoPageState extends State<VideoPage> {
   late FloatingButtonBloc floatingButtonBloc;
   late YoutubePlayerController _controller;
   String videoURL = " ";
+  String imageUrl = " ";
   late PageController pageControllers = PageController(initialPage: 0);
 
   @override
@@ -32,6 +36,11 @@ class _VideoPageState extends State<VideoPage> {
     floatingButtonBloc = BlocProvider.of<FloatingButtonBloc>(context);
   }
 
+  Future<String> _getImageUrl(String imageUrl) async {
+    final Reference ref =
+        FirebaseStorage.instance.ref("solution/").child(imageUrl);
+    return await ref.getDownloadURL();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,16 +55,13 @@ class _VideoPageState extends State<VideoPage> {
               index1 = state.index;
               finalSolutionList = state.finalSolutionList;
               videoURL = state.finalSolutionList[index1][0]['youtube'];
+              imageUrl = state.finalSolutionList[index1][0]['image'];
               return PageView.builder(
                 controller: pageControllers,
-                itemCount: 3,
+                itemCount: 2,
                 itemBuilder: (context, index) {
                   isButtonEnabled = index;
-                  return (index == 0)
-                      ? Text("note")
-                      : (index == 1)
-                          ? videoPlayer()
-                          : Text("image");
+                  return (index == 0) ? videoPlayer() : imageBox();
                 },
               );
             } else {
@@ -64,14 +70,14 @@ class _VideoPageState extends State<VideoPage> {
           },
         ),
       ),
-      floatingActionButton: isButtonEnabled != 2
-          ? Row(
+      floatingActionButton: isButtonEnabled != 1
+          ? nextButton()
+          : Row(
               children: [
                 previousButton(),
-                nextButton(),
+                FloatingActionButton(),
               ],
-            )
-          : FloatingActionButton(),
+            ),
     );
   }
 
@@ -106,6 +112,26 @@ class _VideoPageState extends State<VideoPage> {
         onReady: () => debugPrint('Ready'),
         showVideoProgressIndicator: true,
       ),
+    );
+  }
+
+  Widget imageBox() {
+    return FutureBuilder(
+      future: _getImageUrl(imageUrl),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return ImageLoading();
+        } else if (snapshot.hasError) {
+          return Container();
+        } else if (snapshot.hasData) {
+          return Container(
+              width: ScreenUtil.screenWidth * 0.6,
+              height: ScreenUtil.screenWidth * 0.6,
+              child: Image.network(snapshot.data!));
+        } else {
+          return Text('No data');
+        }
+      },
     );
   }
 
