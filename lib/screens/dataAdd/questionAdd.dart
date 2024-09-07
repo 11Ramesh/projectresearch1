@@ -38,7 +38,7 @@ class _QuestionADDState extends State<QuestionADD> {
       if (pickedFile != null) {
         _image = File(pickedFile.path);
       } else {
-        print('No image selected.');
+        print('No Image selected.');
       }
     });
   }
