@@ -14,3 +14,5 @@ class FlotingActionColors {
 class TextfieldColors {
   static Color fillcolor = Color(0xFFD3D3D3);
 }
+
+Color menuButtonbgColor = Color(0xFF0097B2);

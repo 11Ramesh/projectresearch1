@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:projectresearch/consts/size/screenSize.dart';
+import 'package:projectresearch/screens/menu.dart';
 import 'package:projectresearch/widgets/appbar.dart';
 import 'package:projectresearch/widgets/floatingActionButton.dart';
 import 'package:projectresearch/widgets/height.dart';
@@ -64,45 +65,66 @@ class _SummeryState extends State<Summery> {
             },
           ),
         ),
-        body: Column(
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              Stack(
+                children: [
+                  Positioned(
+                      top: ScreenUtil.screenHeight * 0.25,
+                      left: ScreenUtil.screenWidth * 0.3,
+                      child: Texts(
+                        text: 'සුභ පැතුම්',
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
+                      )),
+                  LottieBuilder.asset('assets/conf.json'),
+                ],
+              ),
+              Text(
+                'අධ්‍යනය සදහා ගත කල කාලය ',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              Height(height: 0.01),
+              Text(timeDifference,
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+              Height(height: 0.2)
+            ],
+          ),
+        ),
+        floatingActionButton: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            Stack(
-              children: [
-                Positioned(
-                    top: ScreenUtil.screenHeight * 0.25,
-                    left: ScreenUtil.screenWidth * 0.3,
-                    child: Texts(
-                      text: 'සුභ පැතුම්',
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold,
-                    )),
-                LottieBuilder.asset('assets/conf.json'),
-              ],
+            FloatingActionButtons(
+              onclick: () async {
+                const url = 'https://beta.dpeducation.lk/en/';
+                if (await canLaunchUrl(Uri.parse(url))) {
+                  await launchUrl(Uri.parse(url));
+                } else {
+                  throw 'Could not launch $url';
+                }
+              },
+              text: 'වැඩිදුර ඉගෙනීම\n(DP Education)',
+              fontSize: 12,
+              height: ScreenUtil.screenWidth * 0.12,
+              width: ScreenUtil.screenWidth * 0.4,
             ),
-            Text(
-              'අධ්‍යනය සදහා ගත කල කාලය ',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            SizedBox(
+              height: 10,
             ),
-            Height(height: 0.01),
-            Text(timeDifference,
-                style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold))
+            FloatingActionButtons(
+              onclick: () {
+                Navigator.push(
+                    context, MaterialPageRoute(builder: (context) => Menu()));
+              },
+              text: 'පළමු පිටුව',
+              fontSize: 12,
+              height: ScreenUtil.screenWidth * 0.12,
+              width: ScreenUtil.screenWidth * 0.4,
+            ),
           ],
         ),
-        floatingActionButton: FloatingActionButtons(
-          onclick: () async {
-            const url = 'https://beta.dpeducation.lk/en/';
-            if (await canLaunchUrl(Uri.parse(url))) {
-              await launchUrl(Uri.parse(url));
-            } else {
-              throw 'Could not launch $url';
-            }
-          },
-          text: 'වැඩිදුර ඉගෙනීම\n(DP Education)',
-          fontSize: 12,
-          height: ScreenUtil.screenWidth * 0.1,
-          width: ScreenUtil.screenWidth * 0.35,
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       ),
     );
   }

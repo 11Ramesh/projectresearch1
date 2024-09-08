@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:projectresearch/main.dart';
 import 'package:projectresearch/screens/Topics.dart';
+import 'package:projectresearch/screens/menu.dart';
 import 'package:projectresearch/widgets/Topiclistview.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -37,7 +38,7 @@ class _SplashScreenState extends State<SplashScreen>
     _controller?.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => Home()));
+            context, MaterialPageRoute(builder: (context) => Menu()));
       }
     });
   }
