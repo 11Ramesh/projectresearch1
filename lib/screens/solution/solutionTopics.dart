@@ -12,8 +12,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:projectresearch/screens/question/result.dart';
 import 'package:projectresearch/screens/solution/summery.dart';
 import 'package:projectresearch/screens/solution/video.dart';
+import 'package:projectresearch/widgets/appbar.dart';
+import 'package:projectresearch/widgets/buttonForSpecificpage.dart';
 import 'package:projectresearch/widgets/elevatedButton.dart';
 import 'package:projectresearch/widgets/floatingActionButton.dart';
+import 'package:projectresearch/widgets/height.dart';
+import 'package:projectresearch/widgets/secondAppbar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SolutionTopics extends StatefulWidget {
@@ -32,6 +36,7 @@ class _SolutionTopicsState extends State<SolutionTopics> {
   bool isFinishButton = false;
 
   @override
+
   void initState() {
     floatingButtonBloc = BlocProvider.of<FloatingButtonBloc>(context);
     checkBlocs = BlocProvider.of<CheckBloc>(context);
@@ -48,7 +53,9 @@ class _SolutionTopicsState extends State<SolutionTopics> {
         return false;
       },
       child: Scaffold(
-          appBar: AppBar(
+        appBar: MainAppbar(),
+        body: Scaffold(
+          appBar: SecondAppBar(
             leading: IconButton(
                 onPressed: () {
                   Navigator.push(context,
@@ -56,62 +63,100 @@ class _SolutionTopicsState extends State<SolutionTopics> {
                 },
                 icon: Icon(Icons.arrow_back_ios_new)),
           ),
-          body: BlocBuilder<FirebaseBloc, FirebaseState>(
-            builder: (context, state) {
-              if (state is solutionPart2State) {
-                finalSolutionToDo = state.finalSolutionToDo;
-                topicCount = state.finalSolutionToDo.length;
+          body: Padding(
+            padding: EdgeInsets.only(
+                left: ScreenUtil.screenWidth * 0.03,
+                right: ScreenUtil.screenWidth * 0.03),
+            child: BlocBuilder<FirebaseBloc, FirebaseState>(
+              builder: (context, state) {
+                if (state is solutionPart2State) {
+                  finalSolutionToDo = state.finalSolutionToDo;
+                  topicCount = state.finalSolutionToDo.length;
 
-                return ListView.builder(
-                  itemCount: topicCount,
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) {
-                    return Container(
-                      height: ScreenUtil.screenHeight * 0.1,
-                      decoration: BoxDecoration(
-                          color: AppbarColors.listViewBackGround,
-                          border:
-                              Border.all(width: 3, color: Colors.transparent),
-                          borderRadius: BorderRadius.circular(10)),
-                      child: ListTile(
-                        title: Text(finalSolutionToDo[index][0]['topic']),
-                        trailing: BlocBuilder<FloatingButtonBloc,
-                            FloatingButtonState>(
-                          builder: (context, state) {
-                            if (state is TopicButtonState) {
-                              countNumber = state.countNumber;
+                  return SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        Height(height: 0.02),
+                        Text(
+                          'පාඩම් මාලාව',
+                          style: TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold),
+                        ),
+                        Height(height: 0.01),
+                        ListView.builder(
+                          itemCount: topicCount,
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemBuilder: (context, index) {
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 8.0,
+                                  horizontal:
+                                      12.0), // Add vertical padding for space between tiles
+                              child: Container(
+                                height: ScreenUtil.screenHeight * 0.1,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[200],
+                                  border: Border.all(
+                                      width: 3, color: Colors.transparent),
+                                  borderRadius: BorderRadius.circular(10),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey
+                                          .withOpacity(0.5), // Shadow color
+                                      spreadRadius: 1, // Spread radius
+                                      blurRadius: 5, // Blur radius
+                                      offset: Offset(0,
+                                          3), // Offset for the shadow to give a 3D effect
+                                    ),
+                                  ],
+                                ),
+                                child: ListTile(
+                                  title: Text(
+                                      finalSolutionToDo[index][0]['topic']),
+                                  trailing: BlocBuilder<FloatingButtonBloc,
+                                      FloatingButtonState>(
+                                    builder: (context, state) {
+                                      if (state is TopicButtonState) {
+                                        countNumber = state.countNumber;
 
-                              return elevatedButtons(
-                                text: "මිලග",
-                                onclick: index <= (countNumber)
-                                    ? () {
-                                        //put data to CheckBloc
-                                        checkBlocs.add(
-                                            DataGetSolutionTopicPageEvent(
-                                                countNumber,
-                                                index,
-                                                finalSolutionToDo));
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    VideoPage()));
+                                        return Buttonforspecificpage(
+                                          text: "මිලග",
+                                          onclick: index <= (countNumber)
+                                              ? () {
+                                                  //put data to CheckBloc
+                                                  checkBlocs.add(
+                                                      DataGetSolutionTopicPageEvent(
+                                                          countNumber,
+                                                          index,
+                                                          finalSolutionToDo));
+                                                  Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              VideoPage()));
+                                                }
+                                              : null,
+                                        );
+                                      } else {
+                                        return CircularPercentIndicator(
+                                            radius: 20);
                                       }
-                                    : null,
-                              );
-                            } else {
-                              return CircularPercentIndicator(radius: 20);
-                            }
+                                    },
+                                  ),
+                                ),
+                              ),
+                            );
                           },
                         ),
-                      ),
-                    );
-                  },
-                );
-              } else {
-                return CircularProgressIndicator();
-              }
-            },
+                      ],
+                    ),
+                  );
+                } else {
+                  return CircularProgressIndicator();
+                }
+              },
+            ),
           ),
           floatingActionButton:
               BlocBuilder<FloatingButtonBloc, FloatingButtonState>(
@@ -123,17 +168,21 @@ class _SolutionTopicsState extends State<SolutionTopics> {
             }
             return isFinishButton
                 ? FloatingActionButtons(
-                    text: 'Finish',
+                    text: 'අවසානයි',
                     onclick: () {
                       Navigator.push(context,
                           MaterialPageRoute(builder: (context) => Summery()));
                     },
                   )
                 : FloatingActionButtons(
-                    text: 'Finish',
+                    text: 'අවසානයි',
                     backgroundColor: Color.fromRGBO(158, 158, 158, 0.679),
                   );
-          })),
+          }),
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerFloat,
+        ),
+      ),
     );
   }
 }

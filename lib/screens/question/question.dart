@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:projectresearch/blocs/firebase/firebase_bloc.dart';
 import 'package:projectresearch/blocs/floating_button/floating_button_bloc.dart';
 import 'package:projectresearch/consts/size/screenSize.dart';
+import 'package:projectresearch/main.dart';
 
 import 'package:projectresearch/screens/question/question_list.dart';
 import 'package:projectresearch/screens/question/result.dart';
@@ -15,6 +16,7 @@ import 'package:projectresearch/widgets/imageLoading.dart';
 import 'package:projectresearch/widgets/loading.dart';
 import 'package:projectresearch/widgets/radioTile.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:projectresearch/widgets/secondAppbar.dart';
 import 'package:projectresearch/widgets/text.dart';
 import 'package:projectresearch/widgets/textFormField.dart';
 import 'package:projectresearch/widgets/width.dart';
@@ -59,6 +61,33 @@ class _QuestionState extends State<Question> {
   Map<String, dynamic> yourGivenAnswer = {};
   int correctAnswerCount = 0;
 
+  void showPageLeaveOrNot(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('දැනුම්දීම'),
+          content: Text('ඔබට පිටුව හැරදා යාමට අවශ්‍යද ?'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('ඔව්'),
+              onPressed: () async {
+                Navigator.push(
+                    context, MaterialPageRoute(builder: (context) => MyApp()));
+              },
+            ),
+            TextButton(
+              child: Text('නැත'),
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   // structure question check . mcq answer check is defind in bloc. its bloc name flotingButtonBlocs.
 
   StructureQuestionCheck(String id, String answer, int controllerIndex) {
@@ -99,212 +128,219 @@ class _QuestionState extends State<Question> {
     FirebaseBloc firebaseblock = BlocProvider.of<FirebaseBloc>(context);
     FloatingButtonBloc flotingButtonBlocs =
         BlocProvider.of<FloatingButtonBloc>(context);
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      appBar: MainAppbar(),
-      body: Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () {
-              firebaseblock.add(addQuestionEvent());
-              Navigator.pop(context);
-            },
+    return WillPopScope(
+      onWillPop: () async {
+        showPageLeaveOrNot(context);
+        return false;
+      },
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        appBar: MainAppbar(),
+        body: Scaffold(
+          appBar: SecondAppBar(
+            leading: IconButton(
+              icon: Icon(Icons.arrow_back_ios),
+              onPressed: () {
+                //firebaseblock.add(addQuestionEvent());
+                showPageLeaveOrNot(context);
+              },
+            ),
           ),
-        ),
-        body: BlocBuilder<FirebaseBloc, FirebaseState>(
-          builder: (context, state) {
-            if (state is addQuestionState) {
-              mcqCount = state.questionCount;
-              //all question id put initialy because send to another block
-              allQuestionId = state.questionId;
-              // all Stucture quesion id
-              allStructureQuestionId = state.structureQuestionId;
-              // all Stucture quesion Answer
-              structureQuestionData = state.structureQuestionsList;
-              return Padding(
-                padding: EdgeInsets.all(ScreenUtil.screenWidth * 0.04),
-                child: PageView.builder(
-                    controller: controller,
-                    scrollDirection: Axis
-                        .horizontal, // Set the scroll direction to horizontal
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount:
-                        state.questionCount + state.structureQuestionCount,
-                    itemBuilder: (context, index) {
-                      index1 = index;
+          body: BlocBuilder<FirebaseBloc, FirebaseState>(
+            builder: (context, state) {
+              if (state is addQuestionState) {
+                mcqCount = state.questionCount;
+                //all question id put initialy because send to another block
+                allQuestionId = state.questionId;
+                // all Stucture quesion id
+                allStructureQuestionId = state.structureQuestionId;
+                // all Stucture quesion Answer
+                structureQuestionData = state.structureQuestionsList;
+                return Padding(
+                  padding: EdgeInsets.all(ScreenUtil.screenWidth * 0.04),
+                  child: PageView.builder(
+                      controller: controller,
+                      scrollDirection: Axis
+                          .horizontal, // Set the scroll direction to horizontal
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount:
+                          state.questionCount + state.structureQuestionCount,
+                      itemBuilder: (context, index) {
+                        index1 = index;
 
-                      if (index < state.questionCount) {
-                        aQuestionId = state.questionId[index];
-                        aCorrectAnswerIndex =
-                            state.question[index]['correctAnswerIndex'];
+                        if (index < state.questionCount) {
+                          aQuestionId = state.questionId[index];
+                          aCorrectAnswerIndex =
+                              state.question[index]['correctAnswerIndex'];
 
-                        /// Mcq page
-                        return SingleChildScrollView(
-                          child: Column(
-                            children: [
-                              //quection title
-                              Texts(
-                                text:
-                                    '(${index + 1})  ${state.question[index]['questions']}',
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              Height(height: 0.05),
+                          /// Mcq page
+                          return SingleChildScrollView(
+                            child: Column(
+                              children: [
+                                //quection title
+                                Texts(
+                                  text:
+                                      '(${index + 1})  ${state.question[index]['questions']}',
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                Height(height: 0.05),
 
-                              /// add image to strucre
-                              FutureBuilder(
-                                future: _getImageUrl(
-                                    state.question[index]['image']),
-                                builder: (context, snapshot) {
-                                  if (snapshot.connectionState ==
-                                      ConnectionState.waiting) {
-                                    return ImageLoading();
-                                  } else if (snapshot.hasError) {
-                                    return Container();
-                                  } else if (snapshot.hasData) {
-                                    return Container(
-                                        width: ScreenUtil.screenWidth * 0.6,
-                                        height: ScreenUtil.screenWidth * 0.6,
-                                        child: Image.network(snapshot.data!));
-                                  } else {
-                                    return Text('No data');
-                                  }
-                                },
-                              ),
-                              ////
-
-                              // answers for question
-                              for (int i = 0; i < 4; i++)
-                                RadioListTile(
-                                  title: Text(
-                                    '${state.question[index]['${i + 1}']}',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
-                                  ),
-                                  value: i,
-                                  groupValue: selectedIndices[index],
-                                  onChanged: (value) {
-                                    if (mcqCount + 1 > pagecount) {
-                                      // Data send to floating button bloc
-                                      flotingButtonBlocs.add(
-                                          addCorrectAnswerEvent(
-                                              value,
-                                              aQuestionId,
-                                              aCorrectAnswerIndex,
-                                              correctAnswers,
-                                              index1,
-                                              userSelectIndexList,
-                                              indexList));
+                                /// add image to strucre
+                                FutureBuilder(
+                                  future: _getImageUrl(
+                                      state.question[index]['image']),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.connectionState ==
+                                        ConnectionState.waiting) {
+                                      return ImageLoading();
+                                    } else if (snapshot.hasError) {
+                                      return Container();
+                                    } else if (snapshot.hasData) {
+                                      return Container(
+                                          width: ScreenUtil.screenWidth * 0.6,
+                                          height: ScreenUtil.screenWidth * 0.6,
+                                          child: Image.network(snapshot.data!));
+                                    } else {
+                                      return Text('No data');
                                     }
-                                    setState(() {
-                                      selectedIndices[index] = value;
-                                    });
                                   },
                                 ),
-                              BlocBuilder<FloatingButtonBloc,
-                                      FloatingButtonState>(
-                                  builder: (context, state) {
-                                if (state is addCorrectAnswerState) {
-                                  yourGivenAnswer = state.userGiveAnswer;
-                                  correctAnswers = state.correctAnswers;
-                                  print(correctAnswers);
-                                }
-                                return Container();
-                              }),
-                              Height(height: 0.2),
-                            ],
-                          ),
-                        );
-                      } else {
-                        ///Structure page
-                        return SingleChildScrollView(
-                          child: Column(
-                            children: [
-                              Texts(
-                                text:
-                                    '(${index + 1})  ${state.structureQuestionsList[index - state.questionCount]['questions']}',
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              Height(height: 0.05),
+                                ////
 
-                              /// add image to strucre
-                              FutureBuilder(
-                                future: _getImageUrl(
-                                    state.structureQuestionsList[
-                                        index - state.questionCount]['image']),
-                                builder: (context, snapshot) {
-                                  if (snapshot.connectionState ==
-                                      ConnectionState.waiting) {
-                                    return ImageLoading();
-                                  } else if (snapshot.hasError) {
-                                    return Container();
-                                  } else if (snapshot.hasData) {
-                                    return Column(
-                                      children: [
-                                        Container(
-                                            width: ScreenUtil.screenWidth * 0.6,
-                                            height:
-                                                ScreenUtil.screenWidth * 0.6,
-                                            child:
-                                                Image.network(snapshot.data!)),
-                                        Height(height: 0.05),
-                                      ],
-                                    );
-                                  } else {
-                                    return Text('No data');
+                                // answers for question
+                                for (int i = 0; i < 4; i++)
+                                  RadioListTile(
+                                    title: Text(
+                                      '${state.question[index]['${i + 1}']}',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    value: i,
+                                    groupValue: selectedIndices[index],
+                                    onChanged: (value) {
+                                      if (mcqCount + 1 > pagecount) {
+                                        // Data send to floating button bloc
+                                        flotingButtonBlocs.add(
+                                            addCorrectAnswerEvent(
+                                                value,
+                                                aQuestionId,
+                                                aCorrectAnswerIndex,
+                                                correctAnswers,
+                                                index1,
+                                                userSelectIndexList,
+                                                indexList));
+                                      }
+                                      setState(() {
+                                        selectedIndices[index] = value;
+                                      });
+                                    },
+                                  ),
+                                BlocBuilder<FloatingButtonBloc,
+                                        FloatingButtonState>(
+                                    builder: (context, state) {
+                                  if (state is addCorrectAnswerState) {
+                                    yourGivenAnswer = state.userGiveAnswer;
+                                    correctAnswers = state.correctAnswers;
+                                    print(correctAnswers);
                                   }
-                                },
-                              ),
-                              ////
+                                  return Container();
+                                }),
+                                Height(height: 0.2),
+                              ],
+                            ),
+                          );
+                        } else {
+                          ///Structure page
+                          return SingleChildScrollView(
+                            child: Column(
+                              children: [
+                                Texts(
+                                  text:
+                                      '(${index + 1})  ${state.structureQuestionsList[index - state.questionCount]['questions']}',
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                Height(height: 0.05),
 
-                              TextFormFields(
-                                  text: '',
-                                  controller:
-                                      answerInput[index - state.questionCount]),
+                                /// add image to strucre
+                                FutureBuilder(
+                                  future: _getImageUrl(state
+                                          .structureQuestionsList[
+                                      index - state.questionCount]['image']),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.connectionState ==
+                                        ConnectionState.waiting) {
+                                      return ImageLoading();
+                                    } else if (snapshot.hasError) {
+                                      return Container();
+                                    } else if (snapshot.hasData) {
+                                      return Column(
+                                        children: [
+                                          Container(
+                                              width:
+                                                  ScreenUtil.screenWidth * 0.6,
+                                              height:
+                                                  ScreenUtil.screenWidth * 0.6,
+                                              child: Image.network(
+                                                  snapshot.data!)),
+                                          Height(height: 0.05),
+                                        ],
+                                      );
+                                    } else {
+                                      return Text('No data');
+                                    }
+                                  },
+                                ),
+                                ////
 
-                              Height(height: 0.2)
-                            ],
-                          ),
-                        );
-                      }
-                    }),
-              );
-            } else {
-              return Loading();
-            }
-          },
-        ),
-        floatingActionButton: BlocBuilder<FirebaseBloc, FirebaseState>(
-          builder: (context, state) {
-            if (state is addQuestionState) {
-              if (pagecount ==
-                  state.questionCount + state.structureQuestionCount) {
-                return Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Width(width: 0.05),
-                    priviousButton(),
-                    Width(width: 0.02),
-                    finishButton(),
-                  ],
+                                TextFormFields(
+                                    text: '',
+                                    controller: answerInput[
+                                        index - state.questionCount]),
+
+                                Height(height: 0.2)
+                              ],
+                            ),
+                          );
+                        }
+                      }),
                 );
               } else {
-                return Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Width(width: 0.05),
-                    priviousButton(),
-                    Width(width: 0.02),
-                    nextButton(),
-                  ],
-                );
+                return Loading();
               }
-            } else {
-              return Container();
-            }
-          },
+            },
+          ),
+          floatingActionButton: BlocBuilder<FirebaseBloc, FirebaseState>(
+            builder: (context, state) {
+              if (state is addQuestionState) {
+                if (pagecount ==
+                    state.questionCount + state.structureQuestionCount) {
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Width(width: 0.05),
+                      priviousButton(),
+                      Width(width: 0.02),
+                      finishButton(),
+                    ],
+                  );
+                } else {
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Width(width: 0.05),
+                      priviousButton(),
+                      Width(width: 0.02),
+                      nextButton(),
+                    ],
+                  );
+                }
+              } else {
+                return Container();
+              }
+            },
+          ),
         ),
       ),
     );

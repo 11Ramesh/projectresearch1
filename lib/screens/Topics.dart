@@ -18,44 +18,52 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: MainAppbar(),
-      body: Scaffold(
-        appBar: AppBar(
-          title: const Text(
-            "මාතෘකා",
-            style: TextStyle(fontWeight: FontWeight.bold),
+    return WillPopScope(
+      onWillPop: () async {
+        return false;
+      },
+      child: Scaffold(
+        appBar: MainAppbar(),
+        body: Scaffold(
+          appBar: AppBar(
+            title: const Text(
+              "මාතෘකා",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            centerTitle: true,
+            automaticallyImplyLeading: false,
           ),
-          centerTitle: true,
+          body: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: TopicLists(),
+          ),
         ),
-        body: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: TopicLists(),
+        floatingActionButton:
+            // Row(
+            //   children: [
+            //     FloatingActionButtons(
+            //         onclick: () {
+            //           Navigator.push(
+            //               context, MaterialPageRoute(builder: (context) => Start()));
+            //         },
+            //         text: "ADD"),
+            //     FloatingActionButtons(
+            //         onclick: () {
+            //           Navigator.push(context,
+            //               MaterialPageRoute(builder: (context) => Instruction()));
+            //         },
+            //         text: "මිලග"),
+            //   ],
+            // ),
+            FloatingActionButtons(
+          onclick: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => Instruction()));
+          },
+          text: "මිලග",
         ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       ),
-      floatingActionButton: Row(
-        children: [
-          FloatingActionButtons(
-              onclick: () {
-                Navigator.push(
-                    context, MaterialPageRoute(builder: (context) => Start()));
-              },
-              text: "ADD"),
-          FloatingActionButtons(
-              onclick: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => Instruction()));
-              },
-              text: "මිලග"),
-        ],
-      ),
-      // FloatingActionButtons(
-      //     onclick: () {
-      //       Navigator.push(context,
-      //           MaterialPageRoute(builder: (context) => Instruction()));
-      //     },
-      //     text: "මිලග"),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }

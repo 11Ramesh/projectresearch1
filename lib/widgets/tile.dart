@@ -5,11 +5,13 @@ class Tile extends StatelessWidget {
   Tile({
     this.fontSize,
     required this.text,
+    this.color,
     super.key,
   });
 
   double? fontSize;
   String text;
+  Color? color;
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +19,7 @@ class Tile extends StatelessWidget {
       padding: const EdgeInsets.only(top: 2, bottom: 10),
       child: Container(
         decoration: BoxDecoration(
-            color: AppbarColors.listViewBackGround,
+            color: color ?? AppbarColors.listViewBackGround,
             border: Border.all(width: 3, color: Colors.transparent),
             borderRadius: BorderRadius.circular(10)),
         child: ListTile(

@@ -13,12 +13,15 @@ import 'package:projectresearch/screens/Topics.dart';
 import 'package:projectresearch/screens/givenAnwer/givenAnswer.dart';
 
 import 'package:projectresearch/screens/solution/solutionTopics.dart';
+import 'package:projectresearch/widgets/appbar.dart';
 import 'package:projectresearch/widgets/circularPresentage.dart';
 import 'package:projectresearch/widgets/floatingActionButton.dart';
 import 'package:projectresearch/widgets/height.dart';
 import 'package:projectresearch/widgets/loading.dart';
+import 'package:projectresearch/widgets/secondAppbar.dart';
 import 'package:projectresearch/widgets/text.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:projectresearch/widgets/tile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Result extends StatefulWidget {
@@ -104,32 +107,46 @@ class _ResultState extends State<Result> {
         return false;
       },
       child: Scaffold(
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-        ),
-        body: SingleChildScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          child: Column(
-            children: [
-              Texts(text: "ඔබගේ ප්‍රතිඵලය"),
-              SizedBox(
-                height: 50,
-              ),
-              presentage(),
-              SizedBox(
-                height: 20,
-              ),
-              //Texts(text: "ඔබ අවදානය යොමුකල යුතු පාඩාම්"),
-              solutionList(),
-            ],
+        appBar: MainAppbar(),
+        body: Scaffold(
+          appBar: SecondAppBar(
+            leading: IconButton(
+                onPressed: () {
+                  showPageLeaveOrNot(context);
+                },
+                icon: Icon(Icons.arrow_back_ios)),
           ),
-        ),
-        floatingActionButton: BlocBuilder<FirebaseBloc, FirebaseState>(
-          builder: (context, state) {
-            if (state is solutionPart2State) {
-              return Row(
+          body: Padding(
+            padding: EdgeInsets.only(
+                left: ScreenUtil.screenWidth * 0.03,
+                right: ScreenUtil.screenWidth * 0.03),
+            child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              child: Column(
                 children: [
-                  FloatingActionButtons(
+                  Height(height: 0.03),
+                  const Align(
+                      alignment: Alignment.center,
+                      child: Text(
+                        "ඔබගේ ප්‍රතිඵලය",
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
+                      )),
+                  Height(height: 0.05),
+                  presentage(),
+                  Height(height: 0.03),
+                  solutionList(),
+                ],
+              ),
+            ),
+          ),
+          floatingActionButton: BlocBuilder<FirebaseBloc, FirebaseState>(
+            builder: (context, state) {
+              if (state is solutionPart2State) {
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    FloatingActionButtons(
                       onclick: () {
                         storeTime();
                         floatingButtonBloc.add(TopicButtonEvent(-1));
@@ -139,8 +156,15 @@ class _ResultState extends State<Result> {
                             MaterialPageRoute(
                                 builder: (context) => SolutionTopics()));
                       },
-                      text: "පාඩම් මාලාවට යොමුවන්න"),
-                  FloatingActionButtons(
+                      text: "පාඩම් මාලාවට යොමුවන්න",
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      textAlign: TextAlign.center,
+                      height: ScreenUtil.screenWidth * 0.12,
+                      width: ScreenUtil.screenWidth * 0.4,
+                    ),
+                    SizedBox(width: 15),
+                    FloatingActionButtons(
                       onclick: () {
                         firebaseblock.add(answerSheetEvent(
                             yourGivenAnswer,
@@ -155,15 +179,22 @@ class _ResultState extends State<Result> {
                             MaterialPageRoute(
                                 builder: (context) => GivenAnswer()));
                       },
-                      text: "your answer "),
-                ],
-              );
-            } else {
-              return Container();
-            }
-          },
+                      text: "ඔබේ පිළිතුරු",
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      height: ScreenUtil.screenWidth * 0.12,
+                      width: ScreenUtil.screenWidth * 0.4,
+                    ),
+                  ],
+                );
+              } else {
+                return Container();
+              }
+            },
+          ),
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerFloat,
         ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       ),
     );
   }
@@ -185,7 +216,7 @@ class _ResultState extends State<Result> {
           if (correctAnswerCount + correctStructureAnswers.length == 0) {
             return CircularPresentage(
               percent: 0,
-              text: "0%",
+              text: "0.00%",
             );
           }
           return CircularPresentage(
@@ -205,43 +236,68 @@ class _ResultState extends State<Result> {
       builder: (context, state) {
         if (state is solutionPart2State) {
           if (state.finalSolutionList.isNotEmpty) {
-            return ListView.builder(
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: state.finalSolutionList.length,
-              shrinkWrap: true,
-              itemBuilder: (context, index) {
-                return Container(
-                    decoration: BoxDecoration(
-                        color: AppbarColors.listViewBackGround,
-                        border: Border.all(width: 3, color: Colors.transparent),
-                        borderRadius: BorderRadius.circular(10)),
-                    child: Column(
-                      children: [
-                        // check your flutter bloc when it show any error
-                        Text('${state.finalSolutionList[index][0]['topic']}'),
-                        ListView.builder(
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: state.finalSolutionList[index].length,
-                          shrinkWrap: true,
-                          itemBuilder: (context, indexsub) {
-                            return Container(
-                              height: ScreenUtil.screenHeight * 0.1,
-                              decoration: BoxDecoration(
-                                  color: AppbarColors.listViewBackGround,
-                                  border: Border.all(
-                                      width: 3, color: Colors.transparent),
-                                  borderRadius: BorderRadius.circular(10)),
-                              child: ListTile(
-                                //title: Text("Ramesh"),
-                                subtitle: Text(state.finalSolutionList[index]
-                                    [indexsub]['subTopic']),
-                              ),
-                            );
-                          },
-                        ),
-                      ],
-                    ));
-              },
+            return Column(
+              children: [
+                const Align(
+                    alignment: Alignment.center,
+                    child: Text(
+                      "ඔබ අවදානය යොමුකල යුතු පාඩාම්",
+                      style:
+                          TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                    )),
+                Height(height: 0.02),
+                ListView.builder(
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: state.finalSolutionList.length,
+                  shrinkWrap: true,
+                  itemBuilder: (context, index) {
+                    return Container(
+                        decoration: BoxDecoration(
+                            //color: AppbarColors.listViewBackGround,
+                            border:
+                                Border.all(width: 3, color: Colors.transparent),
+                            borderRadius: BorderRadius.circular(10)),
+                        child: Column(
+                          children: [
+                            // check your flutter bloc when it show any error
+                            Tile(
+                              text:
+                                  '${state.finalSolutionList[index][0]['topic']}',
+                              color: Colors.blue[100],
+                            ),
+
+                            ListView.separated(
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: state.finalSolutionList[index].length,
+                              shrinkWrap: true,
+                              itemBuilder: (context, indexsub) {
+                                return Container(
+                                  decoration: BoxDecoration(
+                                    //color: AppbarColors.listViewBackGround,
+                                    border: Border.all(
+                                        width: 0, color: Colors.transparent),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: ListTile(
+                                    title: Text(
+                                      '(${indexsub + 1})  ${state.finalSolutionList[index][indexsub]['subTopic']}',
+                                      style: TextStyle(fontSize: 13),
+                                    ),
+                                  ),
+                                );
+                              },
+                              separatorBuilder: (context, indexsub) {
+                                return SizedBox(
+                                    height:
+                                        10); // Replace with your desired separator widget
+                              },
+                            ),
+                          ],
+                        ));
+                  },
+                ),
+                Height(height: 0.1)
+              ],
             );
           } else {
             return Text("congragulation");

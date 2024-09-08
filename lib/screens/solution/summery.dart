@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
+import 'package:projectresearch/consts/size/screenSize.dart';
+import 'package:projectresearch/widgets/appbar.dart';
+import 'package:projectresearch/widgets/secondAppbar.dart';
+import 'package:projectresearch/widgets/text.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Summery extends StatefulWidget {
@@ -46,11 +51,25 @@ class _SummeryState extends State<Summery> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
-      body: Center(
-        child: Column(
+      appBar: MainAppbar(),
+      body: Scaffold(
+        //appBar: SecondAppBar(leading: ),
+        body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            Stack(
+              children: [
+                Positioned(
+                    top: ScreenUtil.screenHeight * 0.2,
+                    left: ScreenUtil.screenWidth * 0.3,
+                    child: Texts(
+                      text: 'සුභ පැතුම්',
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold,
+                    )),
+                LottieBuilder.asset('assets/conf.json'),
+              ],
+            ),
             Text(timeDifference),
           ],
         ),

@@ -38,7 +38,7 @@ class _InstructionState extends State<Instruction> {
   }
 
   void randomizeAndSave() {
-    int randomNumber = Random().nextInt(2) + 1;
+    int randomNumber = Random().nextInt(5) + 1;
     print(randomNumber);
 
     mcq.setInt('mcq', randomNumber);

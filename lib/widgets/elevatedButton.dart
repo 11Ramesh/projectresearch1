@@ -16,7 +16,9 @@ class elevatedButtons extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
         onPressed: onclick,
-        child: Text(text),
+        child: Text(
+          text,
+        ),
         style: ElevatedButton.styleFrom());
   }
 }

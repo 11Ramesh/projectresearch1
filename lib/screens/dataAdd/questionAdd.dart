@@ -26,7 +26,7 @@ class _QuestionADDState extends State<QuestionADD> {
   TextEditingController answer3 = TextEditingController();
   TextEditingController answer4 = TextEditingController();
   CollectionReference questionData =
-      FirebaseFirestore.instance.collection("mcq3");
+      FirebaseFirestore.instance.collection("mcq5");
   File? _image;
   String fileName = '';
 
@@ -145,7 +145,6 @@ class _QuestionADDState extends State<QuestionADD> {
       ),
     );
   }
-
 
   Widget pictureBox() {
     return GestureDetector(

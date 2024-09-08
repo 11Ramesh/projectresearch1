@@ -17,10 +17,14 @@ class CircularPresentage extends StatelessWidget {
   Widget build(BuildContext context) {
     return CircularPercentIndicator(
       radius: 100,
-      lineWidth: 20,
-      progressColor: Colors.amber,
+      lineWidth: 15,
+      progressColor: Colors.blue,
+      backgroundColor: Color.fromARGB(168, 0, 0, 0),
       percent: percent,
-      center: Text(text),
+      center: Text(
+        text,
+        style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+      ),
     );
   }
 }
