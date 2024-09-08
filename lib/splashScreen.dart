@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:projectresearch/main.dart';
 import 'package:projectresearch/screens/Topics.dart';
+import 'package:projectresearch/widgets/Topiclistview.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -55,8 +57,8 @@ class _SplashScreenState extends State<SplashScreen>
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              Color.fromARGB(223, 29, 17, 253),
-              Colors.blue,
+              Colors.white,
+              Colors.green,
             ], // Background gradient colors
           ),
         ),
@@ -66,24 +68,10 @@ class _SplashScreenState extends State<SplashScreen>
                 MainAxisAlignment.center, // Centers the content vertically
             children: [
               FadeTransition(
-                opacity: _animation!,
-                child: const Text(
-                  'ගණිත සවිය',
-                  style: TextStyle(
-                    fontSize: 58,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                    letterSpacing: 5,
-                    fontStyle: FontStyle.italic,
-                  ),
-                ),
-              ),
-              const SizedBox(
-                  height:
-                      20), // Space between text and CircularProgressIndicator
+                  opacity: _animation!, child: Image.asset('assets/logo.png')),
               const SpinKitCircle(
                 color: Colors.blue,
-                //size: 150.0,
+                size: 60.0,
               ),
             ],
           ),

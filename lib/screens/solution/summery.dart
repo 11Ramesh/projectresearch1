@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:projectresearch/consts/size/screenSize.dart';
 import 'package:projectresearch/widgets/appbar.dart';
+import 'package:projectresearch/widgets/floatingActionButton.dart';
+import 'package:projectresearch/widgets/height.dart';
 import 'package:projectresearch/widgets/secondAppbar.dart';
 import 'package:projectresearch/widgets/text.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Summery extends StatefulWidget {
   const Summery({super.key});
@@ -42,7 +45,7 @@ class _SummeryState extends State<Summery> {
       int minutes = difference.inMinutes.remainder(60);
       int seconds = difference.inSeconds.remainder(60);
 
-      timeDifference = "$hours hours and $minutes minutes $seconds Seconds";
+      timeDifference = "$hours පැය $minutes මිනිත්තු $seconds තත්පර";
     } else {
       timeDifference = "Start time not set";
     }
@@ -53,14 +56,20 @@ class _SummeryState extends State<Summery> {
     return Scaffold(
       appBar: MainAppbar(),
       body: Scaffold(
-        //appBar: SecondAppBar(leading: ),
+        appBar: SecondAppBar(
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back_ios),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+        ),
         body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Stack(
               children: [
                 Positioned(
-                    top: ScreenUtil.screenHeight * 0.2,
+                    top: ScreenUtil.screenHeight * 0.25,
                     left: ScreenUtil.screenWidth * 0.3,
                     child: Texts(
                       text: 'සුභ පැතුම්',
@@ -70,9 +79,30 @@ class _SummeryState extends State<Summery> {
                 LottieBuilder.asset('assets/conf.json'),
               ],
             ),
-            Text(timeDifference),
+            Text(
+              'අධ්‍යනය සදහා ගත කල කාලය ',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            Height(height: 0.01),
+            Text(timeDifference,
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold))
           ],
         ),
+        floatingActionButton: FloatingActionButtons(
+          onclick: () async {
+            const url = 'https://beta.dpeducation.lk/en/';
+            if (await canLaunchUrl(Uri.parse(url))) {
+              await launchUrl(Uri.parse(url));
+            } else {
+              throw 'Could not launch $url';
+            }
+          },
+          text: 'වැඩිදුර ඉගෙනීම\n(DP Education)',
+          fontSize: 12,
+          height: ScreenUtil.screenWidth * 0.1,
+          width: ScreenUtil.screenWidth * 0.35,
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       ),
     );
   }
