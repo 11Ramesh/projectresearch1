@@ -73,7 +73,7 @@ class _GivenAnswerState extends State<GivenAnswer> {
             if (state is answerSheetState) {
               questionsListforAnswerSheet = state.questionsListforAnswerSheet;
               StructureQuestionsListforAnswerSheet =
-                  state.StructureQuestionsListforAnswerSheet;
+                state.StructureQuestionsListforAnswerSheet;
               yourGivenAnswer = state.yourGivenAnswer;
               userInputAnswerIndexList = state.userInputAnswerIndexList;
               wrongAnswerReferIndexes = state.wrongAnswerReferIndexes;

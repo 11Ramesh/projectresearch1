@@ -43,6 +43,9 @@ class _ResultState extends State<Result> {
   List<dynamic> allStructureQuestionId = [];
   List<dynamic> correctStructureAnswers = [];
 
+  //
+  bool basic = false;
+
   late SharedPreferences startTime;
   String time = '';
 
@@ -59,6 +62,7 @@ class _ResultState extends State<Result> {
   storeTime() {
     time = DateTime.now().toString();
     startTime.setString('StartTime', time);
+    startTime.setBool('basic', basic);
   }
 
   // timerStart() {
@@ -211,6 +215,10 @@ class _ResultState extends State<Result> {
           correctAnswers = state.correctAnswer;
           allStructureQuestionId = state.allStructureQuestionId;
           correctStructureAnswers = state.correctStructureAnswers;
+          //
+          if (correctAnswerCount + correctStructureAnswers.length > 15) {
+            basic = true;
+          }
           // print(correctStructureAnswers);
           // print(correctAnswers);
           if (correctAnswerCount + correctStructureAnswers.length == 0) {

@@ -12,14 +12,14 @@ class solutionEvent extends FirebaseEvent {
   List correctStructureAnswers;
 
   Map<String, dynamic> yourGivenAnswer;
-  
+
   solutionEvent(
-      this.allQuestion,
-      this.correctAnswer,
-      this.allStructureQuestionId,
-      this.correctStructureAnswers,
-      this.yourGivenAnswer,
-     );
+    this.allQuestion,
+    this.correctAnswer,
+    this.allStructureQuestionId,
+    this.correctStructureAnswers,
+    this.yourGivenAnswer,
+  );
 }
 
 class solutionPart2Event extends FirebaseEvent {
@@ -42,12 +42,21 @@ class solutionPart2Event extends FirebaseEvent {
 }
 
 class answerSheetEvent extends FirebaseEvent {
+ 
   Map<String, dynamic> yourGivenAnswer;
   Map<String, dynamic> userInputAnswerIndexList;
-   List wrongAnswerReferIndexes = [];
+  List wrongAnswerReferIndexes = [];
   List<dynamic> allQuestionId = [];
   List<dynamic> correctAnswers = [];
   List<dynamic> allStructureQuestionId = [];
   List<dynamic> correctStructureAnswers = [];
-  answerSheetEvent(this.yourGivenAnswer,this.userInputAnswerIndexList,this.wrongAnswerReferIndexes,this.allQuestionId,this.correctAnswers,this.allStructureQuestionId,this.correctStructureAnswers);
+  answerSheetEvent(
+    
+      this.yourGivenAnswer,
+      this.userInputAnswerIndexList,
+      this.wrongAnswerReferIndexes,
+      this.allQuestionId,
+      this.correctAnswers,
+      this.allStructureQuestionId,
+      this.correctStructureAnswers);
 }

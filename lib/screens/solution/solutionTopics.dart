@@ -10,6 +10,7 @@ import 'package:projectresearch/consts/colors/colors.dart';
 import 'package:projectresearch/consts/size/screenSize.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:projectresearch/screens/question/result.dart';
+import 'package:projectresearch/screens/solution/basic.dart';
 import 'package:projectresearch/screens/solution/summery.dart';
 import 'package:projectresearch/screens/solution/video.dart';
 import 'package:projectresearch/widgets/appbar.dart';
@@ -31,17 +32,25 @@ class _SolutionTopicsState extends State<SolutionTopics> {
   int index = 0;
   late FloatingButtonBloc floatingButtonBloc;
   late CheckBloc checkBlocs;
+  late SharedPreferences basicinfo;
+  bool? basic = false;
 
   int topicCount = 0;
   bool isFinishButton = false;
 
   @override
-
   void initState() {
     floatingButtonBloc = BlocProvider.of<FloatingButtonBloc>(context);
     checkBlocs = BlocProvider.of<CheckBloc>(context);
-
+    basics();
     super.initState();
+  }
+
+  basics() async {
+    basicinfo = await SharedPreferences.getInstance();
+    setState(() {
+      basic = basicinfo.getBool('basic');
+    });
   }
 
   @override
@@ -82,6 +91,44 @@ class _SolutionTopicsState extends State<SolutionTopics> {
                           style: TextStyle(
                               fontSize: 20, fontWeight: FontWeight.bold),
                         ),
+                        Height(height: 0.01),
+                        basic ?? false
+                            ? Container()
+                            : Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 8.0, horizontal: 12.0),
+                                child: Container(
+                                  height: ScreenUtil.screenHeight * 0.1,
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey[200],
+                                    border: Border.all(
+                                        width: 3, color: Colors.transparent),
+                                    borderRadius: BorderRadius.circular(10),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.grey
+                                            .withOpacity(0.5), // Shadow color
+                                        spreadRadius: 1, // Spread radius
+                                        blurRadius: 5, // Blur radius
+                                        offset: Offset(0,
+                                            3), // Offset for the shadow to give a 3D effect
+                                      ),
+                                    ],
+                                  ),
+                                  child: ListTile(
+                                      title: Text("මූලික"),
+                                      trailing: Buttonforspecificpage(
+                                        text: "පිවිසුම",
+                                        onclick: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      BasicVideo()));
+                                        },
+                                      )),
+                                ),
+                              ),
                         Height(height: 0.01),
                         ListView.builder(
                           itemCount: topicCount,
